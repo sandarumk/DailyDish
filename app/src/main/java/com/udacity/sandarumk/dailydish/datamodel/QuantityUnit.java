@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-enum QuantityUnit {
+public enum QuantityUnit {
     GRAMS("g"),
     KILO_GRAMS("kg"),
     LITRES("l"),

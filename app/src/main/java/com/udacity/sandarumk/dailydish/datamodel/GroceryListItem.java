@@ -7,27 +7,33 @@ import android.arch.persistence.room.PrimaryKey;
 import java.util.Date;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 public class GroceryListItem {
 
     @Getter
+    @Setter
     @PrimaryKey(autoGenerate = true)
     private int groceryListItemID;
 
     @Getter
+    @Setter
     @ColumnInfo(name = "date")
     private Date date;
 
     @Getter
+    @Setter
     @ColumnInfo(name = "status")
     private boolean status;
 
     @Getter
+    @Setter
     @ColumnInfo(name = "meal_schedule_id")
     private int mealScheduleID;
 
     @Getter
+    @Setter
     @ColumnInfo(name = "ingredient_id")
     private int ingredientID;
 }
