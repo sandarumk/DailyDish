@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
+    <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="allow_notifications"
         android:title="@string/notification_setting" />

@@ -2,6 +2,8 @@ package com.udacity.sandarumk.dailydish.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.udacity.sandarumk.dailydish.R;
+import com.udacity.sandarumk.dailydish.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
 
+                        openSelectedOption(menuItem.getItemId());
+
                         return true;
                     }
                 });
@@ -56,4 +61,23 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void openSelectedOption(int itemID) {
+        Fragment newFragment = null;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        switch (itemID) {
+            case R.id.settings:
+                setTitle("Settings");
+                newFragment = new SettingsFragment();
+                break;
+            default:
+                newFragment = new Fragment();
+                break;
+        }
+        if (newFragment != null) {
+            transaction.replace(R.id.content_frame, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
 }
