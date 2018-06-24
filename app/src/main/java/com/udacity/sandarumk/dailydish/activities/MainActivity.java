@@ -13,8 +13,9 @@ import android.view.MenuItem;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.fragments.SettingsFragment;
+import com.udacity.sandarumk.dailydish.fragments.ThisWeekFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private DrawerLayout mDrawerLayout;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+
+        openSelectedOption(R.id.this_week);
     }
 
     @Override
@@ -67,8 +70,12 @@ public class MainActivity extends AppCompatActivity {
 
         switch (itemID) {
             case R.id.settings:
-                setTitle("Settings");
+                setTitle(R.string.settings);
                 newFragment = new SettingsFragment();
+                break;
+            case R.id.this_week:
+                setTitle(R.string.this_week);
+                newFragment = new ThisWeekFragment();
                 break;
             default:
                 newFragment = new Fragment();
