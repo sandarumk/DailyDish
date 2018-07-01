@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.udacity.sandarumk.dailydish.R;
+import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
 import com.udacity.sandarumk.dailydish.fragments.SettingsFragment;
 import com.udacity.sandarumk.dailydish.fragments.ThisWeekFragment;
 
@@ -76,6 +77,10 @@ public class MainActivity extends AppCompatActivity{
             case R.id.this_week:
                 setTitle(R.string.this_week);
                 newFragment = new ThisWeekFragment();
+                break;
+            case R.id.recipes:
+                setTitle("Recipes");
+                newFragment = RecipeListFragment.newInstance(1);
                 break;
             default:
                 newFragment = new Fragment();

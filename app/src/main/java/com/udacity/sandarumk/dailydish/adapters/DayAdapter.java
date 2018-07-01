@@ -31,6 +31,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
             mCardView = v;
             mDateTextView = mCardView.findViewById(R.id.text_date);
             flexboxBreakfast = mCardView.findViewById(R.id.flexbox_breakfast);
+            flexboxLunch = mCardView.findViewById(R.id.flexbox_lunch);
+            flexboxDinner = mCardView.findViewById(R.id.flexbox_dinner);
         }
     }
 
@@ -62,6 +64,18 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         for (String s : tempObject.getBreakfast()) {
             TextView chip = createChip(s);
             holder.flexboxBreakfast.addView(chip);
+            int dp = 2;
+            ((FlexboxLayout.LayoutParams)chip.getLayoutParams()).setMargins(0, 0, 10 * dp, 10 * dp);
+        }
+        for (String lunch : tempObject.getLunch()) {
+            TextView chip = createChip(lunch);
+            holder.flexboxLunch.addView(chip);
+            int dp = 2;
+            ((FlexboxLayout.LayoutParams)chip.getLayoutParams()).setMargins(0, 0, 10 * dp, 10 * dp);
+        }
+        for (String dinner : tempObject.getDinner()) {
+            TextView chip = createChip(dinner);
+            holder.flexboxDinner.addView(chip);
             int dp = 2;
             ((FlexboxLayout.LayoutParams)chip.getLayoutParams()).setMargins(0, 0, 10 * dp, 10 * dp);
         }

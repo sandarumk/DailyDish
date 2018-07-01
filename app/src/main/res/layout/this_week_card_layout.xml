@@ -43,6 +43,7 @@
                 android:id="@+id/flexbox_breakfast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexWrap="wrap">
@@ -67,19 +68,42 @@
                 android:id="@+id/flexbox_lunch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexWrap="wrap">
             </com.google.android.flexbox.FlexboxLayout>
 
+            <TextView
+                android:text="Lunch"
+                android:id="@+id/text_lunch"
+                android:drawableRight="@mipmap/ic_add"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:background="@android:color/darker_gray"
+                android:layout_height="2dp"/>
+
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/flexbox_dinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexWrap="wrap">
             </com.google.android.flexbox.FlexboxLayout>
+
+            <TextView
+                android:text="Dinner"
+                android:id="@+id/text_dinner"
+                android:drawableRight="@mipmap/ic_add"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/info0_text"

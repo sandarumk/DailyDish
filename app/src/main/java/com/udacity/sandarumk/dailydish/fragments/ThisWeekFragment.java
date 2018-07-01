@@ -70,8 +70,20 @@ public class ThisWeekFragment extends Fragment {
                 .dinner(dinner)
                 .build();
 
-        TempObject[] myDataset = new TempObject[1];
+        String date2 = "1st July, 2018 - Tuesday";
+        String[] breakfast2 = {"bread", "jam"};
+        String[] lunch2 = {"rice", "egg"};
+        String[] dinner2 = {"pasta"};
+        TempObject objectToPass2 = TempObject.builder()
+                .date(date2)
+                .breakfast(breakfast2)
+                .lunch(lunch2)
+                .dinner(dinner2)
+                .build();
+
+        TempObject[] myDataset = new TempObject[2];
         myDataset[0] = objectToPass;
+        myDataset[1] = objectToPass2;
         mAdapter = new DayAdapter(myDataset);
 
         mRecyclerView.setAdapter(mAdapter);
