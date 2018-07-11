@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.udacity.sandarumk.dailydish.R;
-import com.udacity.sandarumk.dailydish.datamodel.Recipe;
-import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment.OnListFragmentInteractionListener;
+import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
+import com.udacity.sandarumk.dailydish.datamodel.Ingredient;
+import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment.OnListFragmentInteractionListener;
 import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
 import java.util.List;
@@ -18,12 +19,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.ViewHolder> {
+public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<GroceryListItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Recipe> mValues;
+    private final List<GroceryListItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public RecipeListAdapter(List<Recipe> items, OnListFragmentInteractionListener listener) {
+    public GroceryListItemRecyclerViewAdapter(List<GroceryListItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,15 +32,16 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_recipe, parent, false);
+                .inflate(R.layout.fragment_grocerylistitem, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getRecipeName());
-        holder.mContentView.setText(mValues.get(position).getRecipeNotes());
+        holder.mIdView.setText(mValues.get(position).getGroceryListItemName());
+        Ingredient ingredient = mValues.get(position).getIngredient();
+        holder.mContentView.setText(ingredient.getQuantity() + " " + ingredient.getQuantityUnit().getSymbol());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,13 +64,13 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public Recipe mItem;
+        public GroceryListItem mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.recipe_name);
-            mContentView = (TextView) view.findViewById(R.id.recipe_ingredients);
+            mIdView = (TextView) view.findViewById(R.id.text_grocery_item_name);
+            mContentView = (TextView) view.findViewById(R.id.text_grocery_item_quantity);
         }
 
         @Override

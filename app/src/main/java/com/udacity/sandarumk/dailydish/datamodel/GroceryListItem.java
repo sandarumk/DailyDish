@@ -1,6 +1,7 @@
 package com.udacity.sandarumk.dailydish.datamodel;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -19,6 +20,11 @@ public class GroceryListItem {
 
     @Getter
     @Setter
+    @ColumnInfo(name = "grocery_list_item_name")
+    private String groceryListItemName;
+
+    @Getter
+    @Setter
     @ColumnInfo(name = "date")
     private Date date;
 
@@ -34,6 +40,7 @@ public class GroceryListItem {
 
     @Getter
     @Setter
-    @ColumnInfo(name = "ingredient_id")
-    private int ingredientID;
+    @Embedded
+    private Ingredient ingredient;
+
 }

@@ -1,8 +1,11 @@
 package com.udacity.sandarumk.dailydish.fragments.dummy;
 
-import com.udacity.sandarumk.dailydish.datamodel.Recipe;
+import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
+import com.udacity.sandarumk.dailydish.datamodel.Ingredient;
+import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,17 +16,17 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class GroceryListContent {
 
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<Recipe> ITEMS = new ArrayList<Recipe>();
+    public static final List<GroceryListItem> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, Recipe> ITEM_MAP = new HashMap<String, Recipe>();
+    public static final Map<String, GroceryListItem> ITEM_MAP = new HashMap<>();
 
     private static final int COUNT = 25;
 
@@ -34,18 +37,22 @@ public class DummyContent {
         }
     }
 
-    private static void addItem(Recipe item) {
+    private static void addItem(GroceryListItem item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.getRecipeName(), item);
+        ITEM_MAP.put(item.getGroceryListItemName(), item);
     }
 
-    private static Recipe createDummyItem(int position) {
-        Recipe dummyRecipe = new Recipe();
-        dummyRecipe.setId(0+position);
-        dummyRecipe.setRecipeName("Dummy Recipe"+position);
-        dummyRecipe.setMealTime(7);
-        dummyRecipe.setRecipeNotes("Dummy Recipe Notes");
-        dummyRecipe.setRecipeSteps("Step 1");
+    private static GroceryListItem createDummyItem(int position) {
+        GroceryListItem dummyRecipe = new GroceryListItem();
+        dummyRecipe.setGroceryListItemID(0+position);
+        dummyRecipe.setGroceryListItemName("Dummy Recipe"+position);
+        dummyRecipe.setDate(new Date());
+        Ingredient ingredient = new Ingredient();
+        ingredient.setQuantity(3);
+        ingredient.setQuantityUnit(QuantityUnit.UNITS);
+        dummyRecipe.setIngredient(ingredient);
+        dummyRecipe.setMealScheduleID(position);
+        dummyRecipe.setStatus(true);
 
         return dummyRecipe;
     }

@@ -16,4 +16,9 @@ public enum QuantityUnit {
 
     @Getter
     private final String symbol;
+
+    @Override
+    public String toString() {
+        return this.symbol;
+    }
 }

@@ -1,11 +1,8 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.udacity.sandarumk.dailydish.R;
-import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
-import com.udacity.sandarumk.dailydish.adapters.RecipeListAdapter;
-import com.udacity.sandarumk.dailydish.datamodel.Recipe;
-import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent;
+import com.udacity.sandarumk.dailydish.adapters.GroceryListItemRecyclerViewAdapter;
+import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
+import com.udacity.sandarumk.dailydish.fragments.dummy.GroceryListContent;
 
 /**
  * A fragment representing a list of Items.
@@ -25,27 +21,25 @@ import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RecipeListFragment extends Fragment {
+public class GroceryListItemFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final int REQUEST_CODE = 1000;
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public RecipeListFragment() {
+    public GroceryListItemFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static RecipeListFragment newInstance(int columnCount) {
-        RecipeListFragment fragment = new RecipeListFragment();
+    public static GroceryListItemFragment newInstance(int columnCount) {
+        GroceryListItemFragment fragment = new GroceryListItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -64,38 +58,23 @@ public class RecipeListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recipe_list);
+
+        View view = inflater.inflate(R.layout.fragment_grocerylistitem_list, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+
         // Set the adapter
-            Context context = view.getContext();
+        if (recyclerView != null) {
+            Context context = recyclerView.getContext();
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new RecipeListAdapter(RecipeContent.ITEMS, mListener));
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                    DividerItemDecoration.VERTICAL);
-            recyclerView.addItemDecoration(dividerItemDecoration);
-
-        FloatingActionButton fab =view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(getContext(), AddRecipeActivity.class), REQUEST_CODE);
-            }
-        });
-
+            recyclerView.setAdapter(new GroceryListItemRecyclerViewAdapter(GroceryListContent.ITEMS, mListener));
+        }
         return view;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE){
-            //do something
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -103,8 +82,8 @@ public class RecipeListFragment extends Fragment {
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
+          //  throw new RuntimeException(context.toString()
+           //         + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -126,6 +105,6 @@ public class RecipeListFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Recipe item);
+        void onListFragmentInteraction(GroceryListItem item);
     }
 }
