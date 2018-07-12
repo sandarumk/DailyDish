@@ -25,6 +25,14 @@
             android:padding="8dp"
             tools:context=".activities.AddRecipeActivity">
 
+            <EditText
+                android:id="@+id/edit_text_recipe_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:inputType="textCapWords"
+                android:hint="Recipe Name"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

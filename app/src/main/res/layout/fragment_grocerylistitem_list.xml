@@ -26,7 +26,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:src="@mipmap/ic_fab_add"
-        android:layout_margin="16dp"
+        app:useCompatPadding="true"
         android:layout_alignParentRight="true" />
 
 </RelativeLayout>

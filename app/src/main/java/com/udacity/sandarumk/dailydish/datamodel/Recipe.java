@@ -42,4 +42,5 @@ public class Recipe {
     @Setter
     @ColumnInfo(name = "meal_time")
     private int mealTime;
+
 }
