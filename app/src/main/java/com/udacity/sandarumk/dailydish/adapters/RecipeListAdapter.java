@@ -40,6 +40,21 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getRecipeName());
         holder.mContentView.setText(mValues.get(position).getRecipeNotes());
+        String mealTimeText = "";
+        int mealTime = mValues.get(position).getMealTime();
+        if (mealTime >> 2 == 1) {
+            mealTimeText += "B";
+        }
+        if ((mealTime >> 1) % 2 == 1) {
+            mealTimeText += "L";
+        }
+        if (mealTime % 2 == 1) {
+            mealTimeText += "D";
+        }
+        if (mealTimeText.isEmpty()) {
+            mealTimeText = "--";
+        }
+        holder.mIconView.setText(mealTimeText);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +77,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final TextView mIconView;
         public Recipe mItem;
 
         public ViewHolder(View view) {
@@ -69,6 +85,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.recipe_name);
             mContentView = (TextView) view.findViewById(R.id.recipe_ingredients);
+            mIconView = (TextView) view.findViewById(R.id.meal_time);
         }
 
         @Override

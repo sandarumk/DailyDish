@@ -21,4 +21,13 @@ public enum QuantityUnit {
     public String toString() {
         return this.symbol;
     }
+
+    public static QuantityUnit findBySymbol(String symbol){
+        for (QuantityUnit quantityUnit : QuantityUnit.values()) {
+            if(quantityUnit.getSymbol().equals(symbol)){
+                return quantityUnit;
+            }
+        }
+        return UNITS;
+    }
 }

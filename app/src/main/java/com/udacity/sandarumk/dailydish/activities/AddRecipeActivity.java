@@ -1,12 +1,13 @@
 package com.udacity.sandarumk.dailydish.activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,19 +15,48 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.sandarumk.dailydish.R;
+import com.udacity.sandarumk.dailydish.datamodel.Ingredient;
 import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
+import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddRecipeActivity extends AppCompatActivity {
+
+    public static final String INTENT_EXTRA_RECIPE = "recipeWrapper";
+
+    private RecipeWrapper recipeWrapper;
+
+    private EditText editTextRecipeName;
+    private ViewGroup containerIngredients;
+    private EditText editTextSteps;
+    private EditText editTextNotes;
+    private TextView textIngredients;
+    private ArrayAdapter<QuantityUnit> quantityUnitArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getIntent().hasExtra(INTENT_EXTRA_RECIPE)) {
+            recipeWrapper = (RecipeWrapper) getIntent().getSerializableExtra(INTENT_EXTRA_RECIPE);
+        } else {
+            recipeWrapper = RecipeWrapper.builder()
+                    .recipe(new Recipe())
+                    .recipeIngredientList(new ArrayList<Ingredient>())
+                    .build();
+        }
+
         setContentView(R.layout.activity_add_recipe);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -34,14 +64,13 @@ public class AddRecipeActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
 
+        editTextRecipeName = findViewById(R.id.edit_text_recipe_name);
+        editTextSteps = findViewById(R.id.edit_text_steps);
+        editTextNotes = findViewById(R.id.edit_text_notes);
+        containerIngredients = findViewById(R.id.ingredients_layout);
+        textIngredients = findViewById(R.id.text_ingredients);
 
-        //add sample ingredient
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View ingredientView = layoutInflater.inflate(R.layout.ingredient_layout, (ViewGroup) findViewById(R.id.ingredients_layout));
-        AppCompatSpinner unitSpinner = ingredientView.findViewById(R.id.item_unit);
-        unitSpinner.setAdapter(new ArrayAdapter<QuantityUnit>(this,android.R.layout.simple_list_item_1,QuantityUnit.values()));
-
-
+        updateUI();
     }
 
     @Override
@@ -55,7 +84,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                finish();
                 return true;
             case R.id.menu_ok:
                 updateRecipe();
@@ -66,22 +95,143 @@ public class AddRecipeActivity extends AppCompatActivity {
     }
 
     private void updateRecipe() {
-        //TODO save recipe as new one or update current
-        final Recipe newRecipe = new Recipe();
-        newRecipe.setId(0);
-        newRecipe.setRecipeName("Egg Sandwich");
-        newRecipe.setRecipeSteps("Boil eggs, split eggs, mix with butter");
-        newRecipe.setRecipeNotes("Recipe Note");
-        newRecipe.setMealTime(0);
+        Recipe recipe = recipeWrapper.getRecipe();
+        recipe.setRecipeName(editTextRecipeName.getText().toString());
+        recipe.setRecipeSteps(editTextSteps.getText().toString());
+        recipe.setRecipeNotes(editTextNotes.getText().toString());
 
+        List<Ingredient> recipeIngredientList = recipeWrapper.getRecipeIngredientList();
 
+        int childCount = containerIngredients.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View ingredientView = containerIngredients.getChildAt(i);
+            Ingredient ingredient;
+            if (i < recipeIngredientList.size()) {
+                ingredient = recipeIngredientList.get(i);
+            } else {
+                ingredient = new Ingredient();
+                recipeIngredientList.add(ingredient);
+            }
 
-        AsyncTask<Recipe, Void, Void> asyncTask = new RecipeSaveTask(this);
-        asyncTask.execute(newRecipe);
+            TextView ingredientNameView = ingredientView.findViewById(R.id.item_name);
+            TextView ingredientQuantityView = ingredientView.findViewById(R.id.item_size);
+            Spinner ingredientUnitView = ingredientView.findViewById(R.id.item_unit);
+
+            String ingredientName = ingredientNameView.getText().toString();
+            String ingredientQuantity = ingredientQuantityView.getText().toString();
+            String unitSymbol = ingredientUnitView.getSelectedItem().toString();
+
+            if (ingredientName.isEmpty()) {
+                ingredientNameView.setError("Invalid ingredient name");
+                return;
+            }
+            if (ingredientQuantity.isEmpty()) {
+                ingredientQuantityView.setError("Invalid ingredient quantity");
+                return;
+            }
+            if (unitSymbol.isEmpty()) {
+                Toast.makeText(this, "Invalid unit selected for the ingredient  " + ingredientName, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            ingredient.setIngredientName(ingredientName);
+            ingredient.setQuantity(Integer.parseInt(ingredientQuantity));
+            ingredient.setQuantityUnit(QuantityUnit.findBySymbol(unitSymbol));
+
+        }
+
+        RecipeSaveTask asyncTask = new RecipeSaveTask(this);
+        asyncTask.execute(recipeWrapper);
+    }
+
+    private void updateUI() {
+        Recipe recipe = recipeWrapper.getRecipe();
+        editTextRecipeName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setTitle(s.toString());
+            }
+        });
+        editTextRecipeName.setText(recipe.getRecipeName());
+        editTextNotes.setText(recipe.getRecipeNotes());
+        editTextSteps.setText(recipe.getRecipeSteps());
+
+        List<Ingredient> recipeIngridientList = recipeWrapper.getRecipeIngredientList();
+        if (recipeIngridientList == null) {
+            recipeIngridientList = new ArrayList<>();
+            recipeWrapper.setRecipeIngredientList(recipeIngridientList);
+        }
+
+        textIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addIngredient();
+            }
+        });
+
+        for (final Ingredient ingredient : recipeIngridientList) {
+            final View ingredientView = createIngredientView(containerIngredients, ingredient);
+            EditText editTextIngredientName = ingredientView.findViewById(R.id.item_name);
+            editTextIngredientName.setText(ingredient.getIngredientName());
+
+            EditText editTextIngredientSize = ingredientView.findViewById(R.id.item_size);
+            editTextIngredientSize.setText(String.valueOf(ingredient.getQuantity()));
+
+            Spinner spinnerIngredientUnit = ingredientView.findViewById(R.id.item_unit);
+            int selection = 0;
+            QuantityUnit[] values = QuantityUnit.values();
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] == ingredient.getQuantityUnit()) {
+                    selection = i;
+                }
+            }
+            spinnerIngredientUnit.setSelection(selection);
+        }
 
     }
 
-    class RecipeSaveTask extends AsyncTask<Recipe, Void, Void> {
+    private void removeIngredient(View ingredientView, Ingredient ingredient) {
+        recipeWrapper.getRecipeIngredientList().remove(ingredient);
+        containerIngredients.removeView(ingredientView);
+    }
+
+    private void addIngredient() {
+        Ingredient ingredient = new Ingredient();
+        recipeWrapper.getRecipeIngredientList().add(ingredient);
+        createIngredientView(containerIngredients, ingredient);
+    }
+
+    private View createIngredientView(ViewGroup parentView, final Ingredient ingredient) {
+        if (quantityUnitArrayAdapter == null) {
+            quantityUnitArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, QuantityUnit.values());
+        }
+        //add sample ingredient
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        final View ingredientView = layoutInflater.inflate(R.layout.ingredient_layout, null);
+        Spinner unitSpinner = ingredientView.findViewById(R.id.item_unit);
+        unitSpinner.setAdapter(quantityUnitArrayAdapter);
+        unitSpinner.setSelection(0);
+        parentView.addView(ingredientView);
+        ingredientView.findViewById(R.id.item_remove).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeIngredient(ingredientView, ingredient);
+            }
+        });
+        return ingredientView;
+    }
+
+    static class RecipeSaveTask extends AsyncTask<RecipeWrapper, Void, Void> {
 
         private WeakReference<AddRecipeActivity> activityReference;
 
@@ -90,15 +240,20 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Recipe... recipes) {
-            DataProvider.getDatabase(activityReference.get()).recipeDAO().addRecipe(recipes[0]);
+        protected Void doInBackground(RecipeWrapper... wrappers) {
+            DataProvider.saveRecipe(activityReference.get(), wrappers[0].getRecipe(), wrappers[0].getRecipeIngredientList());
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            activityReference.get().finish();
+            AddRecipeActivity addRecipeActivity = activityReference.get();
+            if (addRecipeActivity != null) {
+                Intent data = new Intent();
+                addRecipeActivity.setResult(RESULT_OK, data);
+                addRecipeActivity.finish();
+            }
         }
     }
 

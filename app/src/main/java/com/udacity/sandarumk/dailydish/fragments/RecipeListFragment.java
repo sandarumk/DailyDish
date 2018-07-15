@@ -2,9 +2,11 @@ package com.udacity.sandarumk.dailydish.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +19,11 @@ import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
 import com.udacity.sandarumk.dailydish.adapters.RecipeListAdapter;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
-import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent;
+import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
+import com.udacity.sandarumk.dailydish.util.DataProvider;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -33,6 +39,7 @@ public class RecipeListFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
 
 
     /**
@@ -59,52 +66,68 @@ public class RecipeListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        mListener = new OnListFragmentInteractionListener() {
+            @Override
+            public void onListFragmentInteraction(Recipe item) {
+                selectRecipe(item);
+            }
+        };
+    }
+
+    private void selectRecipe(Recipe item) {
+        new RecipeDetailLoadTask(this).execute(item.getId());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recipe_list);
-        // Set the adapter
-            Context context = view.getContext();
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new RecipeListAdapter(RecipeContent.ITEMS, mListener));
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                    DividerItemDecoration.VERTICAL);
-            recyclerView.addItemDecoration(dividerItemDecoration);
 
-        FloatingActionButton fab =view.findViewById(R.id.fab);
+        recyclerView = view.findViewById(R.id.recipe_list);
+        // Set the adapter
+        Context context = view.getContext();
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+//        recyclerView.setAdapter(new RecipeListAdapter(RecipeContent.ITEMS, mListener));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getContext(), AddRecipeActivity.class), REQUEST_CODE);
+                startRecipeDetailActivity(null);
             }
         });
 
+        loadRecipes();
+
         return view;
+    }
+
+    private void startRecipeDetailActivity(RecipeWrapper recipeWrapper) {
+        Intent intent = new Intent(getContext(), AddRecipeActivity.class);
+        if (recipeWrapper != null) {
+            intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE, recipeWrapper);
+        }
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+
+    private void loadRecipes() {
+        new RecipeLoadTask(this).execute();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE){
-            //do something
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
+        if (requestCode == REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
+            loadRecipes();
         }
     }
 
@@ -113,6 +136,7 @@ public class RecipeListFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -127,5 +151,66 @@ public class RecipeListFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe item);
+    }
+
+    static class RecipeLoadTask extends AsyncTask<Void, Void, List<Recipe>> {
+
+        private WeakReference<RecipeListFragment> fragmentReference;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        public RecipeLoadTask(RecipeListFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected List<Recipe> doInBackground(Void... params) {
+            return DataProvider.loadAllRecipes(fragmentReference.get().getContext());
+        }
+
+        @Override
+        protected void onPostExecute(List<Recipe> result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null) {
+                RecipeListFragment recipeListFragment = fragmentReference.get();
+                if (recipeListFragment != null) {
+                    recipeListFragment.recyclerView.setAdapter(new RecipeListAdapter(result, recipeListFragment.mListener));
+                }
+            }
+        }
+    }
+
+    static class RecipeDetailLoadTask extends AsyncTask<Integer, Void, RecipeWrapper> {
+
+        private WeakReference<RecipeListFragment> fragmentReference;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        public RecipeDetailLoadTask(RecipeListFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected RecipeWrapper doInBackground(Integer... params) {
+            return DataProvider.loadRecipe(fragmentReference.get().getContext(), params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(RecipeWrapper result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null && fragmentReference.get() != null) {
+                fragmentReference.get().startRecipeDetailActivity(result);
+            }
+        }
     }
 }
