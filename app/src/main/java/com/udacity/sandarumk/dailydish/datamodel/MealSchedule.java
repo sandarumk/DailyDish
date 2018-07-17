@@ -1,15 +1,18 @@
 package com.udacity.sandarumk.dailydish.datamodel;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Builder
 public class MealSchedule {
 
     @Getter
@@ -24,8 +27,9 @@ public class MealSchedule {
 
     @Getter
     @Setter
-    @ColumnInfo(name = "recipe_id")
-    private int recipleID;
+    @Embedded
+    @ColumnInfo(name = "recipe")
+    private Recipe recipe;
 
     @Getter
     @Setter

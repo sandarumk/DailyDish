@@ -13,7 +13,7 @@ import java.util.List;
 public interface RecipeDAO {
 
     @Insert
-    void addRecipe(Recipe recipe);
+    long addRecipe(Recipe recipe);
 
     @Query("SELECT * from Recipe where id = :id")
     Recipe findById(int id);
