@@ -50,8 +50,7 @@ public class GroceryListContent {
         Ingredient ingredient = new Ingredient();
         ingredient.setQuantity(3);
         ingredient.setQuantityUnit(QuantityUnit.UNITS);
-        dummyRecipe.setIngredient(ingredient);
-        dummyRecipe.setMealScheduleID(position);
+        dummyRecipe.setIngredientId(ingredient.getIngredientID());
         dummyRecipe.setStatus(true);
 
         return dummyRecipe;

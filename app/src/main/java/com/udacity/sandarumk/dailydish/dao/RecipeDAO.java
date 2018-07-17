@@ -15,7 +15,7 @@ public interface RecipeDAO {
     @Insert
     long addRecipe(Recipe recipe);
 
-    @Query("SELECT * from Recipe where id = :id")
+    @Query("SELECT * from Recipe where recipe_id = :id")
     Recipe findById(int id);
 
     @Query("SELECT * FROM Recipe")
@@ -23,4 +23,7 @@ public interface RecipeDAO {
 
     @Update
     void updateRecipe(Recipe... recipes);
+
+    @Query("SELECT name FROM Recipe WHERE recipe_id = :recipeID")
+    String getRecipeNameGivenId(int recipeID);
 }

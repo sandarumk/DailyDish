@@ -1,6 +1,7 @@
 package com.udacity.sandarumk.dailydish.dao;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -17,7 +18,7 @@ public interface MealScheduleDAO {
     @Insert
     long addMealSchedule(MealSchedule mealSchedule);
 
-    @Query("SELECT * from MealSchedule where scheduleID = :id")
+    @Query("SELECT * from MealSchedule where schedule_id = :id")
     MealSchedule findById(int id);
 
     @Query("SELECT * FROM MealSchedule")
@@ -34,4 +35,10 @@ public interface MealScheduleDAO {
 
     @Update
     void updateMealSchedule(MealSchedule... mealSchedules);
+
+    @Delete
+    void deleteMealSchedule(MealSchedule mealSchedule);
+
+    @Query("DELETE FROM MealSchedule WHERE date=:date AND meal_time=:mealTimeId AND recipe_id=:recipeId")
+    void deleteMealSchedule(Date date, int mealTimeId, int recipeId);
 }

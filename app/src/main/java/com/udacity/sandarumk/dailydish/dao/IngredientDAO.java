@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface IngredientDAO {
 
-    @Query("SELECT * from Ingredient where ingredientID = :id")
+    @Query("SELECT * from Ingredient where ingredient_id = :id")
     Ingredient findById(int id);
 
     @Insert

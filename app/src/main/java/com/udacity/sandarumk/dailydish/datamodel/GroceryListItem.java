@@ -1,8 +1,9 @@
 package com.udacity.sandarumk.dailydish.datamodel;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
@@ -10,7 +11,10 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = Ingredient.class,
+        parentColumns = "ingredient_id",
+        childColumns = "ingredient_id"),
+        indices = @Index("ingredient_id"))
 public class GroceryListItem {
 
     @Getter
@@ -35,12 +39,13 @@ public class GroceryListItem {
 
     @Getter
     @Setter
-    @ColumnInfo(name = "meal_schedule_id")
-    private int mealScheduleID;
+    @ColumnInfo(name = "ingredient_id")
+    private int ingredientId;
 
     @Getter
     @Setter
-    @Embedded
-    private Ingredient ingredient;
+    @ColumnInfo(name = "is_manually_added")
+    private boolean isManual;
+
 
 }

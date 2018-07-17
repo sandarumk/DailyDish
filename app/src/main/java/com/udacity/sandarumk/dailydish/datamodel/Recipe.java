@@ -15,7 +15,8 @@ public class Recipe implements Serializable {
     @Getter
     @Setter
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    @ColumnInfo(name = "recipe_id")
+    private int recipeId;
 
     @Getter
     @Setter

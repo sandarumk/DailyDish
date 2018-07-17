@@ -41,7 +41,7 @@ public class RecipeContent {
 
     private static Recipe createDummyItem(int position) {
         Recipe dummyRecipe = new Recipe();
-        dummyRecipe.setId(0+position);
+        dummyRecipe.setRecipeId(0+position);
         dummyRecipe.setRecipeName("Dummy Recipe"+position);
         dummyRecipe.setMealTime(7);
         dummyRecipe.setRecipeNotes("Dummy Recipe Notes");

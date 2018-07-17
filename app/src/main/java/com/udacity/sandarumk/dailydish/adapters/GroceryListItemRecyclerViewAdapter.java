@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
-import com.udacity.sandarumk.dailydish.datamodel.Ingredient;
 import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment.OnListFragmentInteractionListener;
 import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
@@ -40,8 +39,8 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getGroceryListItemName());
-        Ingredient ingredient = mValues.get(position).getIngredient();
-        holder.mContentView.setText(ingredient.getQuantity() + " " + ingredient.getQuantityUnit().getSymbol());
+//        Ingredient ingredient = mValues.get(position).getIngredient();
+//        holder.mContentView.setText(ingredient.getQuantity() + " " + ingredient.getQuantityUnit().getSymbol());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

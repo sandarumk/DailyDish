@@ -3,6 +3,8 @@ package com.udacity.sandarumk.dailydish.util;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import com.squareup.haha.guava.collect.ArrayListMultimap;
+import com.squareup.haha.guava.collect.Multimap;
 import com.udacity.sandarumk.dailydish.dao.IngredientDAO;
 import com.udacity.sandarumk.dailydish.dao.RecipeDAO;
 import com.udacity.sandarumk.dailydish.datamodel.AppDatabase;
@@ -12,8 +14,8 @@ import com.udacity.sandarumk.dailydish.datamodel.MealSchedule;
 import com.udacity.sandarumk.dailydish.datamodel.MealTime;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
+import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemBreakdownWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
-import com.udacity.sandarumk.dailydish.datawrappers.RecipeGroceryItemWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class DataProvider {
 
+    public static final String JOINER = "~";
+
     public AppDatabase getDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "dailydish").build();
     }
@@ -34,14 +38,14 @@ public class DataProvider {
     public void saveRecipe(Context context, Recipe recipe, List<Ingredient> ingredientList) {
         RecipeDAO recipeDAO = getDatabase(context).recipeDAO();
         IngredientDAO ingredientDAO = getDatabase(context).ingredientDAO();
-        if (recipe.getId() > 0) {
+        if (recipe.getRecipeId() > 0) {
             recipeDAO.updateRecipe(recipe);
         } else {
-            recipe.setId((int) recipeDAO.addRecipe(recipe));
+            recipe.setRecipeId((int) recipeDAO.addRecipe(recipe));
         }
 
         for (Ingredient ingredient : ingredientList) {
-            ingredient.setRecipeID(recipe.getId());
+            ingredient.setRecipeId(recipe.getRecipeId());
             if (ingredient.getIngredientID() > 0) {
                 ingredientDAO.updateIngredients(ingredient);
             } else {
@@ -69,7 +73,7 @@ public class DataProvider {
         Map<Date, DayWrapper> dayWrapperMap = new HashMap<>();
         for (MealSchedule mealSchedule : getDatabase(context).mealScheduleDAO().loadAllMealSchedulesForGivenDateRange(from, to)) {
             MealTime mealTime = mealSchedule.getMealTime();
-            Recipe recipe = mealSchedule.getRecipe();
+            Recipe recipe = getDatabase(context).recipeDAO().findById(mealSchedule.getRecipeId());
             Date mealScheduleDate = mealSchedule.getDate();
             if (dayWrapperMap.containsKey(mealSchedule.getDate())) {
                 DayWrapper dayWrapper = dayWrapperMap.get(mealScheduleDate);
@@ -96,27 +100,78 @@ public class DataProvider {
     }
 
     public void saveSchedule(Context context, Date date, MealTime mealTime, Recipe recipe) {
-        MealSchedule mealSchedule = MealSchedule.builder()
-                .mealTime(mealTime)
-                .recipe(recipe)
-                .date(date)
-                .build();
+        MealSchedule mealSchedule =new MealSchedule();
+        mealSchedule.setMealTime(mealTime);
+        mealSchedule.setDate(date);
+        mealSchedule.setRecipeId(recipe.getRecipeId());
         getDatabase(context).mealScheduleDAO().addMealSchedule(mealSchedule);
+        updateGroceryList(context,recipe);
     }
 
-    public List<GroceryItemWrapper> loadManualGroceryList(Context context, Date from, Date to) {
-        //TODO load manually added grocery items for the given date range
-        List<GroceryItemWrapper> groceryItemWrapperList = new ArrayList<>();
-        for (GroceryListItem groceryListItem : getDatabase(context).groceryListItemDAO().loadAllGroceryListItemsdForGivenDateRange(from, to)) {
-            GroceryItemWrapper groceryItemWrapper = GroceryItemWrapper.builder()
-                    .ingredientName(groceryListItem.getIngredient().getIngredientName())
-                    .quantityUnit(groceryListItem.getIngredient().getQuantityUnit())
-                    .checked(groceryListItem.isStatus())
+    private static void updateGroceryList(Context context,Recipe recipe) {
+        for (Ingredient ingredient : getDatabase(context).ingredientDAO().loadRecipeIngredient(recipe.getRecipeId())) {
+            GroceryListItem item = new GroceryListItem();
+            item.setIngredientId(ingredient.getIngredientID());
+            item.setManual(false);
+            item.setStatus(false);
+            getDatabase(context).groceryListItemDAO().addGroceryItem(item);
         }
     }
 
-    public List<RecipeGroceryItemWrapper> loadRecipeGroceryList(Context context, Date from, Date to) {
-        //TODO load grocery items populated from the meal schedules for the given date range
+    public void deleteSchedule(Context context, Date date, MealTime mealTime, Recipe recipe) {
+        //TODO delete meal schedule
+        getDatabase(context).mealScheduleDAO().deleteMealSchedule(date,mealTime.getMealTime(),recipe.getRecipeId());
+
+        //TODO delete grocery list items with all recipe.ingredients
+    }
+
+    public List<GroceryItemWrapper> loadGroceryList(Context context, Date from, Date to) {
+        Multimap<String, GroceryItemBreakdownWrapper> groceryItemMap = ArrayListMultimap.create();
+        for (GroceryListItem groceryListItem : getDatabase(context).groceryListItemDAO().loadAllGroceryListItemsdForGivenDateRange(from, to)) {
+            Ingredient ingredient = getDatabase(context).ingredientDAO().findById(groceryListItem.getIngredientId());
+            Recipe recipe = getDatabase(context).recipeDAO().findById(ingredient.getRecipeId());
+            GroceryItemBreakdownWrapper groceryBreakdownItem = GroceryItemBreakdownWrapper.builder()
+                    .recipeName(recipe.getRecipeName())
+                    .quantityUnit(ingredient.getQuantityUnit())
+                    .quantity(ingredient.getQuantity())
+                    .date(groceryListItem.getDate())
+                    .manual(groceryListItem.isManual())
+                    .id(groceryListItem.getGroceryListItemID())
+                    .build();
+            groceryItemMap.put(ingredient.getIngredientName()+JOINER+ ingredient.getQuantityUnit(),groceryBreakdownItem);
+        }
+        return createGroceryListWrappers(groceryItemMap);
+    }
+
+    private static List<GroceryItemWrapper> createGroceryListWrappers(Multimap<String, GroceryItemBreakdownWrapper> groceryItemMap) {
+        List<GroceryItemWrapper> groceryItemWrapperList = new ArrayList<>();
+        for (String s : groceryItemMap.asMap().keySet()) {
+            ArrayList<GroceryItemBreakdownWrapper> breakdownWrappers = new ArrayList<>(groceryItemMap.get(s));
+            GroceryItemWrapper groceryItemWrapper = GroceryItemWrapper.builder()
+                    .ingredientName(s.split(JOINER)[0])
+                    .breakdownWrappers(breakdownWrappers)
+                    .build();
+            groceryItemWrapperList.add(groceryItemWrapper);
+        }
+        return aggregate(groceryItemWrapperList);
+    }
+
+    private static List<GroceryItemWrapper> aggregate(List<GroceryItemWrapper> groceryItemWrapperList) {
+        for (GroceryItemWrapper groceryItemWrapper : groceryItemWrapperList) {
+            int totalQuantity = 0;
+            for (GroceryItemBreakdownWrapper groceryItemBreakdownWrapper : groceryItemWrapper.getBreakdownWrappers()) {
+                totalQuantity+= groceryItemBreakdownWrapper.getQuantity();
+            }
+            groceryItemWrapper.setTotalQuantity(totalQuantity);
+        }
+        return groceryItemWrapperList;
+    }
+
+    public static void checkGroceryListItem(Context context,GroceryItemWrapper itemWrapper, boolean isChecked){
+        for (GroceryItemBreakdownWrapper groceryItemBreakdownWrapper : itemWrapper.getBreakdownWrappers()) {
+            getDatabase(context).groceryListItemDAO().updateStatus(groceryItemBreakdownWrapper.getId(),isChecked);
+        }
+
     }
 
 

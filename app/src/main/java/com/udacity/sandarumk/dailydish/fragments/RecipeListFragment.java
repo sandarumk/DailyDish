@@ -76,7 +76,7 @@ public class RecipeListFragment extends Fragment {
     }
 
     private void selectRecipe(Recipe item) {
-        new RecipeDetailLoadTask(this).execute(item.getId());
+        new RecipeDetailLoadTask(this).execute(item.getRecipeId());
     }
 
     @Override
