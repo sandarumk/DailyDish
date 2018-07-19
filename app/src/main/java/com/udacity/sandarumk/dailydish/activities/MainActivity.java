@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -16,10 +17,16 @@ import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
 import com.udacity.sandarumk.dailydish.fragments.SettingsFragment;
 import com.udacity.sandarumk.dailydish.fragments.ThisWeekFragment;
+import com.udacity.sandarumk.dailydish.util.DateUtil;
 
-public class MainActivity extends AppCompatActivity{
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+
+    private Date from;
+    private Date to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,10 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
 
+        Pair<Date, Date> dateDatePair = DateUtil.getWeekStartEnd();
+        from = dateDatePair.first;
+        to = dateDatePair.second;
+
         openSelectedOption(R.id.this_week);
     }
 
@@ -77,7 +88,7 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case R.id.this_week:
                 setTitle(R.string.this_week);
-                newFragment = new ThisWeekFragment();
+                newFragment = ThisWeekFragment.newInstance(from, to);
                 break;
             case R.id.recipes:
                 setTitle("Recipes");
@@ -85,7 +96,7 @@ public class MainActivity extends AppCompatActivity{
                 break;
             case R.id.grocery_list:
                 setTitle("Grocery List");
-                newFragment = GroceryListItemFragment.newInstance(1);
+                newFragment = GroceryListItemFragment.newInstance(1, from, to);
                 break;
             default:
                 newFragment = new Fragment();

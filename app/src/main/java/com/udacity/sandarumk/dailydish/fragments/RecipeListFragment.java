@@ -66,13 +66,6 @@ public class RecipeListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
-        mListener = new OnListFragmentInteractionListener() {
-            @Override
-            public void onListFragmentInteraction(Recipe item) {
-                selectRecipe(item);
-            }
-        };
     }
 
     private void selectRecipe(Recipe item) {
@@ -128,6 +121,21 @@ public class RecipeListFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             loadRecipes();
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeListFragment.OnListFragmentInteractionListener) {
+            mListener = (RecipeListFragment.OnListFragmentInteractionListener) context;
+        } else {
+            mListener = new OnListFragmentInteractionListener() {
+                @Override
+                public void onListFragmentInteraction(Recipe item) {
+                    selectRecipe(item);
+                }
+            };
         }
     }
 

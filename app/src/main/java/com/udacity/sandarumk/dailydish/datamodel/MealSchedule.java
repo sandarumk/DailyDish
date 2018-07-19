@@ -21,7 +21,7 @@ public class MealSchedule {
     @Setter
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "schedule_id")
-    private int scheduleID;
+    private long scheduleID;
 
     @Getter
     @Setter

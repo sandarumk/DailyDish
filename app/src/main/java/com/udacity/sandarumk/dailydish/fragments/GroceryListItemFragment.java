@@ -1,8 +1,10 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +14,13 @@ import android.view.ViewGroup;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.adapters.GroceryListItemRecyclerViewAdapter;
-import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
-import com.udacity.sandarumk.dailydish.fragments.dummy.GroceryListContent;
+import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
+import com.udacity.sandarumk.dailydish.util.DataProvider;
+import com.udacity.sandarumk.dailydish.util.DateUtil;
+
+import java.lang.ref.WeakReference;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -25,9 +32,16 @@ public class GroceryListItemFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+
+    private static final String ARG_FROM = "fromDate";
+    private static final String ARG_TO = "toDate";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
+
+    private Date from;
+    private Date to;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,10 +52,12 @@ public class GroceryListItemFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static GroceryListItemFragment newInstance(int columnCount) {
+    public static GroceryListItemFragment newInstance(int columnCount, Date from, Date to) {
         GroceryListItemFragment fragment = new GroceryListItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable(ARG_FROM, from);
+        args.putSerializable(ARG_TO, to);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +68,13 @@ public class GroceryListItemFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            from = (Date) getArguments().getSerializable(ARG_FROM);
+            to = (Date) getArguments().getSerializable(ARG_TO);
+        }
+        if (from == null || to == null) {
+            Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd();
+            from = startEnd.first;
+            to = startEnd.second;
         }
     }
 
@@ -60,7 +83,8 @@ public class GroceryListItemFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_grocerylistitem_list, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.list);
+
+        recyclerView = view.findViewById(R.id.list);
 
         // Set the adapter
         if (recyclerView != null) {
@@ -70,9 +94,18 @@ public class GroceryListItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new GroceryListItemRecyclerViewAdapter(GroceryListContent.ITEMS, mListener));
         }
+
+        startLoad();
         return view;
+    }
+
+    private void startLoad() {
+        new GroceryLoadTask(this).execute(from, to);
+    }
+
+    private void updateGroceryList(List<GroceryItemWrapper> list) {
+        recyclerView.setAdapter(new GroceryListItemRecyclerViewAdapter(list, mListener));
     }
 
 
@@ -82,8 +115,8 @@ public class GroceryListItemFragment extends Fragment {
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
-          //  throw new RuntimeException(context.toString()
-           //         + " must implement OnListFragmentInteractionListener");
+            //  throw new RuntimeException(context.toString()
+            //         + " must implement OnListFragmentInteractionListener");
         }
     }
 
@@ -104,7 +137,37 @@ public class GroceryListItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(GroceryListItem item);
+        void onListFragmentInteraction(GroceryItemWrapper item);
+    }
+
+    static class GroceryLoadTask extends AsyncTask<Date, Void, List<GroceryItemWrapper>> {
+
+        private WeakReference<GroceryListItemFragment> fragmentReference;
+
+        public GroceryLoadTask(GroceryListItemFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        @Override
+        protected List<GroceryItemWrapper> doInBackground(Date... params) {
+            Date from = params[0];
+            Date to = params[1];
+            return DataProvider.loadGroceryList(fragmentReference.get().getContext(), from, to);
+        }
+
+        @Override
+        protected void onPostExecute(List<GroceryItemWrapper> result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null && fragmentReference.get() != null) {
+                fragmentReference.get().updateGroceryList(result);
+            }
+        }
     }
 }

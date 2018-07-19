@@ -87,4 +87,6 @@
         <item>Oz</item>
         <item>Kg</item>
     </string-array>
+    <string name="title_activity_recipe_select">Select a recipe</string>
+    <string name="action_settings">Settings</string>
 </resources>

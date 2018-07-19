@@ -4,10 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.udacity.sandarumk.dailydish.R;
-import com.udacity.sandarumk.dailydish.datamodel.GroceryListItem;
+import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
 import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment.OnListFragmentInteractionListener;
 import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
@@ -20,10 +21,10 @@ import java.util.List;
  */
 public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<GroceryListItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<GroceryListItem> mValues;
+    private final List<GroceryItemWrapper> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public GroceryListItemRecyclerViewAdapter(List<GroceryListItem> items, OnListFragmentInteractionListener listener) {
+    public GroceryListItemRecyclerViewAdapter(List<GroceryItemWrapper> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,10 +38,11 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getGroceryListItemName());
-//        Ingredient ingredient = mValues.get(position).getIngredient();
-//        holder.mContentView.setText(ingredient.getQuantity() + " " + ingredient.getQuantityUnit().getSymbol());
+        GroceryItemWrapper groceryItemWrapper = mValues.get(position);
+        holder.mItem = groceryItemWrapper;
+        holder.mIdView.setText(groceryItemWrapper.getIngredientName());
+        holder.mContentView.setText(groceryItemWrapper.getTotalQuantity() + " " + groceryItemWrapper.getQuantityUnit().getSymbol());
+        holder.mCheckBox.setChecked(groceryItemWrapper.isChecked());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,13 +65,15 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public GroceryListItem mItem;
+        public final CheckBox mCheckBox;
+        public GroceryItemWrapper mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.text_grocery_item_name);
             mContentView = (TextView) view.findViewById(R.id.text_grocery_item_quantity);
+            mCheckBox = view.findViewById(R.id.check_grocery_item);
         }
 
         @Override
