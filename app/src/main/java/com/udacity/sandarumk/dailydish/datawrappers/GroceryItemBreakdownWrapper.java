@@ -16,4 +16,9 @@ public class GroceryItemBreakdownWrapper {
     private int quantity;
     private QuantityUnit quantityUnit;
     private boolean manual;
+    private boolean checked;
+
+    public String quantityText(){
+        return quantity + " " + quantityUnit.getSymbol();
+    }
 }

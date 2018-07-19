@@ -15,4 +15,8 @@ public class GroceryItemWrapper {
     protected int totalQuantity;
     protected QuantityUnit quantityUnit;
     private List<GroceryItemBreakdownWrapper> breakdownWrappers;
+
+    public String quantityText(){
+        return totalQuantity + " " + quantityUnit.getSymbol();
+    }
 }

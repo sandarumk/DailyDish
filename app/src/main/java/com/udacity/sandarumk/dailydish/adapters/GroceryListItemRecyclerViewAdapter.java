@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
-import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment.OnListFragmentInteractionListener;
 import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
 import java.util.List;
@@ -41,19 +40,30 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
         GroceryItemWrapper groceryItemWrapper = mValues.get(position);
         holder.mItem = groceryItemWrapper;
         holder.mIdView.setText(groceryItemWrapper.getIngredientName());
-        holder.mContentView.setText(groceryItemWrapper.getTotalQuantity() + " " + groceryItemWrapper.getQuantityUnit().getSymbol());
+        holder.mContentView.setText(groceryItemWrapper.quantityText());
         holder.mCheckBox.setChecked(groceryItemWrapper.isChecked());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
+        if (null != mListener) {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     mListener.onListFragmentInteraction(holder.mItem);
+
                 }
-            }
-        });
+            });
+//            holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    mListener.onListItemCheck(holder.mItem, isChecked);
+//                }
+//            });
+            holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onListItemCheck(holder.mItem, ((CheckBox) v).isChecked());
+                }
+            });
+        }
     }
 
     @Override
@@ -80,5 +90,11 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    public interface OnListFragmentInteractionListener {
+        void onListFragmentInteraction(GroceryItemWrapper item);
+
+        void onListItemCheck(GroceryItemWrapper item, boolean newStatus);
     }
 }

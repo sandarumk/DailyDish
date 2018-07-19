@@ -140,8 +140,9 @@ public class DataProvider {
                     .date(groceryListItem.getDate())
                     .manual(groceryListItem.isManual())
                     .id(groceryListItem.getGroceryListItemID())
+                    .checked(groceryListItem.isStatus())
                     .build();
-            groceryItemMap.put(ingredient.getIngredientName() + JOINER + ingredient.getQuantityUnit(), groceryBreakdownItem);
+            groceryItemMap.put(ingredient.getIngredientName() + JOINER + ingredient.getQuantityUnit() + JOINER + groceryListItem.isStatus(), groceryBreakdownItem);
         }
         return createGroceryListWrappers(groceryItemMap);
     }
@@ -159,6 +160,7 @@ public class DataProvider {
                     .ingredientName(split[0])
                     .totalQuantity(totalQuantity)
                     .quantityUnit(QuantityUnit.findBySymbol(split[1]))
+                    .checked(Boolean.parseBoolean(split[2]))
                     .breakdownWrappers(breakdownWrappers)
                     .build();
             groceryItemWrapperList.add(groceryItemWrapper);
