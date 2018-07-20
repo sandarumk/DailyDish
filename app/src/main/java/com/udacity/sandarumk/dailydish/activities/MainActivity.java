@@ -12,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
@@ -23,6 +26,7 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
 
     private Date from;
@@ -32,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MobileAds.initialize(this, "ca-app-pub-1454306136054607~1239265956");
+//        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         to = dateDatePair.second;
 
         openSelectedOption(R.id.this_week);
+
+        AdView adView = findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("C98DB9D9C73047CAD050890357647175").build();
+        adView.loadAd(adRequest);
     }
 
     @Override
