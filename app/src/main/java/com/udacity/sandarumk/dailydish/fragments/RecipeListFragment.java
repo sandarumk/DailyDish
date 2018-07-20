@@ -193,7 +193,7 @@ public class RecipeListFragment extends Fragment {
         }
     }
 
-    static class RecipeDetailLoadTask extends AsyncTask<Integer, Void, RecipeWrapper> {
+    static class RecipeDetailLoadTask extends AsyncTask<Long, Void, RecipeWrapper> {
 
         private WeakReference<RecipeListFragment> fragmentReference;
 
@@ -208,7 +208,7 @@ public class RecipeListFragment extends Fragment {
         }
 
         @Override
-        protected RecipeWrapper doInBackground(Integer... params) {
+        protected RecipeWrapper doInBackground(Long... params) {
             return DataProvider.loadRecipe(fragmentReference.get().getContext(), params[0]);
         }
 

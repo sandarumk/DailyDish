@@ -41,5 +41,5 @@ public class Ingredient implements Serializable {
     @Getter
     @Setter
     @ColumnInfo(name = "recipe_id")
-    private int recipeId;
+    private long recipeId;
 }

@@ -40,5 +40,5 @@ public interface MealScheduleDAO {
     void deleteMealSchedule(MealSchedule mealSchedule);
 
     @Query("DELETE FROM MealSchedule WHERE date=:date AND meal_time=:mealTimeId AND recipe_id=:recipeId")
-    void deleteMealSchedule(Date date, int mealTimeId, int recipeId);
+    void deleteMealSchedule(Date date, int mealTimeId, long recipeId);
 }

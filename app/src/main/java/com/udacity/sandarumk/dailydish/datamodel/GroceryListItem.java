@@ -40,7 +40,7 @@ public class GroceryListItem {
     @Getter
     @Setter
     @ColumnInfo(name = "ingredient_id")
-    private int ingredientId;
+    private long ingredientId;
 
     @Getter
     @Setter

@@ -31,7 +31,7 @@ public class MealSchedule {
     @Getter
     @Setter
     @ColumnInfo(name = "recipe_id")
-    private int recipeId;
+    private long recipeId;
 
     @Getter
     @Setter

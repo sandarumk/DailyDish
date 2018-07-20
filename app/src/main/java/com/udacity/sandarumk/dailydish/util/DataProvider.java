@@ -55,7 +55,7 @@ public class DataProvider {
         }
     }
 
-    public RecipeWrapper loadRecipe(Context context, int recipeId) {
+    public RecipeWrapper loadRecipe(Context context, long recipeId) {
         RecipeDAO recipeDAO = getDatabase(context).recipeDAO();
         IngredientDAO ingredientDAO = getDatabase(context).ingredientDAO();
         return RecipeWrapper.builder()
@@ -183,6 +183,35 @@ public class DataProvider {
         for (GroceryItemBreakdownWrapper groceryItemBreakdownWrapper : itemWrapper.getBreakdownWrappers()) {
             getDatabase(context).groceryListItemDAO().updateStatus(groceryItemBreakdownWrapper.getId(), isChecked);
         }
+
+    }
+
+    public void addManualGroceryItem(Context context, Date date, String name, int quantity, QuantityUnit quantityUnit) {
+        //save manual item from above details
+        long recipeId = -1;
+        if (getDatabase(context).recipeDAO().getRecipeGivenName("Manually Added") != null) {
+            recipeId = getDatabase(context).recipeDAO().getRecipeGivenName("Manually Added").getRecipeId();
+        } else {
+            Recipe recipe = new Recipe();
+            recipe.setRecipeName("Manually Added");
+            recipeId = getDatabase(context).recipeDAO().addRecipe(recipe);
+        }
+
+        Ingredient ingredient = new Ingredient();
+        ingredient.setIngredientName(name);
+        ingredient.setQuantity(quantity);
+        ingredient.setQuantityUnit(quantityUnit);
+        ingredient.setRecipeId(recipeId);
+        long ingredientId = getDatabase(context).ingredientDAO().addIngredient(ingredient);
+
+        GroceryListItem groceryListItem = new GroceryListItem();
+        groceryListItem.setGroceryListItemName(name);
+        groceryListItem.setDate(date);
+        groceryListItem.setManual(true);
+        groceryListItem.setIngredientId(ingredientId);
+        groceryListItem.setStatus(false);
+        getDatabase(context).groceryListItemDAO().addGroceryItem(groceryListItem);
+
 
     }
 

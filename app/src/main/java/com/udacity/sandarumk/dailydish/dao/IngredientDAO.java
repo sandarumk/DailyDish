@@ -13,16 +13,16 @@ import java.util.List;
 public interface IngredientDAO {
 
     @Query("SELECT * from Ingredient where ingredient_id = :id")
-    Ingredient findById(int id);
+    Ingredient findById(long id);
 
     @Insert
-    void addIngredient(Ingredient ingredient);
+    long addIngredient(Ingredient ingredient);
 
     @Query("SELECT * FROM Ingredient")
     List<Ingredient> loadAllIngredients();
 
     @Query("SELECT * FROM Ingredient where recipe_id=:id ")
-    List<Ingredient> loadRecipeIngredient(int id);
+    List<Ingredient> loadRecipeIngredient(long id);
 
     @Update
     void updateIngredients(Ingredient... ingredients);

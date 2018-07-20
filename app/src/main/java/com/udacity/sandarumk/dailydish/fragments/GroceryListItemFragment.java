@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
@@ -14,11 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.adapters.GroceryListItemRecyclerViewAdapter;
+import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemBreakdownWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
@@ -106,6 +111,15 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
             }
         }
 
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddItem();
+            }
+        });
+
         startLoad();
         return view;
     }
@@ -120,6 +134,56 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
 
     private void refreshGroceryList() {
         recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void addNewItem(String itemName, int quantity, QuantityUnit quantityUnit) {
+        Date date = new Date();
+        if (!(from.before(date) && to.after(date))) {
+            date = from;
+        }
+        new AddManualGroceryItemTask(this).execute(date, itemName, quantity, quantityUnit);
+    }
+
+    private void showAddItem() {
+        LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
+        final View parent = layoutInflater.inflate(R.layout.grocery_add_layout, null);
+        final EditText editItemName = parent.findViewById(R.id.edit_grocery_item_name);
+        final EditText editItemQuantity = parent.findViewById(R.id.edit_grocery_item_quantity);
+        final Spinner spinnerUnit = parent.findViewById(R.id.spinner_grocery_item_unit);
+        spinnerUnit.setAdapter(new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1, QuantityUnit.values()));
+        spinnerUnit.setSelection(0);
+
+
+        new AlertDialog.Builder(this.getContext())
+                .setTitle("Add New Item")
+                .setView(parent)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean hasError = false;
+                        if (editItemName.getText().toString().isEmpty()) {
+                            editItemName.setError("Invalid item name");
+                            hasError = true;
+                        } else if (editItemQuantity.toString().isEmpty()) {
+                            editItemName.setError("Invalid quantity");
+                            hasError = true;
+                        }
+
+                        QuantityUnit quantityUnit = QuantityUnit.findBySymbol(spinnerUnit.getSelectedItem().toString());
+
+                        if (!hasError) {
+                            addNewItem(editItemName.getText().toString(), Integer.parseInt(editItemQuantity.getText().toString()), quantityUnit);
+                            dialog.dismiss();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
 
@@ -142,7 +206,7 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
 
     @Override
     public void onListFragmentInteraction(GroceryItemWrapper item) {
-        //TODO show item breakdown
+        //show item breakdown
         List<GroceryItemBreakdownWrapper> breakdownWrappers = item.getBreakdownWrappers();
         if (breakdownWrappers != null && !breakdownWrappers.isEmpty()) {
             LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
@@ -221,7 +285,22 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
         protected List<GroceryItemWrapper> doInBackground(Date... params) {
             Date from = params[0];
             Date to = params[1];
-            return DataProvider.loadGroceryList(fragmentReference.get().getContext(), from, to);
+            List<GroceryItemWrapper> groceryItemWrapperList = DataProvider.loadGroceryList(fragmentReference.get().getContext(), from, to);
+            if (groceryItemWrapperList != null) {
+                Collections.sort(groceryItemWrapperList, new Comparator<GroceryItemWrapper>() {
+                    @Override
+                    public int compare(GroceryItemWrapper o1, GroceryItemWrapper o2) {
+                        if (o1.isChecked() == o2.isChecked()) {
+                            return o1.getIngredientName().compareTo(o2.getIngredientName());
+                        } else if (o1.isChecked()) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                });
+            }
+            return groceryItemWrapperList;
         }
 
         @Override
@@ -268,6 +347,45 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
                     fragmentReference.get().refreshGroceryList();
                 } else {
                     Toast.makeText(fragmentReference.get().getContext(), "Error updating grocery item status", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    static class AddManualGroceryItemTask extends AsyncTask<Object, Void, Boolean> {
+
+        private WeakReference<GroceryListItemFragment> fragmentReference;
+
+        public AddManualGroceryItemTask(GroceryListItemFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        @Override
+        protected Boolean doInBackground(Object... params) {
+            try {
+                DataProvider.addManualGroceryItem(fragmentReference.get().getContext(), (Date) params[0], (String) params[1], (int) params[2], (QuantityUnit) params[3]);
+            } catch (Exception e) {
+                Log.e(TAG, "Error in adding manual grocery item", e);
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (fragmentReference.get() != null) {
+                if (result != null) {
+                    fragmentReference.get().startLoad();
+                } else {
+                    Toast.makeText(fragmentReference.get().getContext(), "Error adding manual grocery item", Toast.LENGTH_LONG).show();
                 }
             }
         }

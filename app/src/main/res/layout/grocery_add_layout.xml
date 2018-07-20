@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="10dp">
+
+    <EditText
+        android:id="@+id/edit_grocery_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:hint="Item name"
+        android:text="" />
+
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_grocery_item_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edit_grocery_item_quantity"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/edit_grocery_item_name">
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <EditText
+        android:id="@+id/edit_grocery_item_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_grocery_item_name"
+        android:layout_toLeftOf="@+id/spinner_grocery_item_unit"
+        android:gravity="right"
+        android:hint="Quantity"
+        android:inputType="number" />
+
+
+</RelativeLayout>
