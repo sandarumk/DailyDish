@@ -32,8 +32,9 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:fontFamily="@font/roboto"
             android:lines="3"
-            tools:text="30\n December\n Wednesday" />
+            tools:text="" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -68,6 +69,7 @@
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
+                app:fontFamily="@font/roboto"
                 android:text="Breakfast" />
 
             <FrameLayout
@@ -92,6 +94,7 @@
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
                 android:onClick="addLunch"
+                app:fontFamily="@font/roboto"
                 android:text="Lunch" />
 
             <FrameLayout
@@ -115,6 +118,7 @@
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
+                app:fontFamily="@font/roboto"
                 android:text="Dinner" />
 
             <TextView

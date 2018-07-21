@@ -27,6 +27,7 @@ android {
 //        sourceCompatibility 1.8
     }
     buildToolsVersion '27.0.3'
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 }
 
 dependencies {

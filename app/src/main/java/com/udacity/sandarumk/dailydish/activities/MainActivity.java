@@ -115,8 +115,17 @@ public class MainActivity extends AppCompatActivity {
         }
         if (newFragment != null) {
             transaction.replace(R.id.content_frame, newFragment);
-            transaction.addToBackStack(null);
+            String backStackname = getTitle().toString();
+            transaction.addToBackStack(backStackname);
             transaction.commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            finish();
         }
     }
 }

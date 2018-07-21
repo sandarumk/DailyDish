@@ -14,7 +14,6 @@ public class DailyDishApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-        // Normal app init code...
 
     }
 }

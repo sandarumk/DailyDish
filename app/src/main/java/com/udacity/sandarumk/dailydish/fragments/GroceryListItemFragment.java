@@ -150,7 +150,7 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
         final EditText editItemName = parent.findViewById(R.id.edit_grocery_item_name);
         final EditText editItemQuantity = parent.findViewById(R.id.edit_grocery_item_quantity);
         final Spinner spinnerUnit = parent.findViewById(R.id.spinner_grocery_item_unit);
-        spinnerUnit.setAdapter(new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1, QuantityUnit.values()));
+        spinnerUnit.setAdapter(new ArrayAdapter<>(this.getContext(), R.layout.simple_list_item, QuantityUnit.values()));
         spinnerUnit.setSelection(0);
 
 

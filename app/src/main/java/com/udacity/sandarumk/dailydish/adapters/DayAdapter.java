@@ -23,7 +23,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
     private List<DayWrapper> mDataset;
     private LayoutInflater inflater;
 
-    private AddScheduleListener addScheduleListener;
+    private ScheduleEventListener scheduleEventListener;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -53,9 +53,9 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DayAdapter(List<DayWrapper> myDataset, AddScheduleListener addScheduleListener) {
+    public DayAdapter(List<DayWrapper> myDataset, ScheduleEventListener scheduleEventListener) {
         mDataset = myDataset;
-        this.addScheduleListener = addScheduleListener;
+        this.scheduleEventListener = scheduleEventListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -82,34 +82,49 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         ViewGroup[] dayViewContainers = {holder.flexboxBreakfast, holder.flexboxLunch, holder.flexboxDinner};
         for (int i = 0; i < mealTimes.length; i++) {
             dayViewContainers[i].removeAllViews();
-            List<Recipe> recipeList = dayWrapper.getSchedule().get(mealTimes[i]);
+            final MealTime mealTime = mealTimes[i];
+            List<Recipe> recipeList = dayWrapper.getSchedule().get(mealTime);
             if (recipeList != null) {
-                for (Recipe recipes : recipeList) {
-                    TextView chip = createChip(recipes.getRecipeName());
+                for (final Recipe recipe : recipeList) {
+                    ViewGroup chip = createChip(recipe.getRecipeName());
+                    if (scheduleEventListener != null) {
+                        chip.findViewById(R.id.btn_remove).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                scheduleEventListener.onDeleteSchedule(dayWrapper, mealTime, recipe);
+                            }
+                        });
+                        chip.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                scheduleEventListener.onSelectSchedule(dayWrapper, mealTime, recipe);
+                            }
+                        });
+                    }
                     dayViewContainers[i].addView(chip);
                     int dp = 2;
                     ((FlexboxLayout.LayoutParams) chip.getLayoutParams()).setMargins(0, 0, 10 * dp, 10 * dp);
                 }
             }
         }
-        if (addScheduleListener != null) {
+        if (scheduleEventListener != null) {
             View[] buttonContainers = {holder.buttonAddBreakfast, holder.buttonAddLunch, holder.buttonAddDinner};
             for (int i = 0; i < mealTimes.length; i++) {
                 final int finalI = i;
                 buttonContainers[i].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        addScheduleListener.onAddSchedule(dayWrapper, mealTimes[finalI]);
+                        scheduleEventListener.onAddSchedule(dayWrapper, mealTimes[finalI]);
                     }
                 });
             }
         }
     }
 
-    private TextView createChip(String text) {
-        TextView textView = (TextView) inflater.inflate(R.layout.chip_layout, null);
-        textView.setText(text);
-        return textView;
+    private ViewGroup createChip(String text) {
+        ViewGroup chip = (ViewGroup) inflater.inflate(R.layout.chip_layout, null);
+        ((TextView) chip.findViewById(R.id.text_name)).setText(text);
+        return chip;
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -118,7 +133,11 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         return mDataset.size();
     }
 
-    public interface AddScheduleListener {
+    public interface ScheduleEventListener {
         void onAddSchedule(DayWrapper dayWrapper, MealTime mealTime);
+
+        void onDeleteSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
+
+        void onSelectSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
     }
 }

@@ -213,7 +213,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     private View createIngredientView(ViewGroup parentView, final Ingredient ingredient) {
         if (quantityUnitArrayAdapter == null) {
-            quantityUnitArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, QuantityUnit.values());
+            quantityUnitArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, QuantityUnit.values());
         }
         //add sample ingredient
         LayoutInflater layoutInflater = LayoutInflater.from(this);

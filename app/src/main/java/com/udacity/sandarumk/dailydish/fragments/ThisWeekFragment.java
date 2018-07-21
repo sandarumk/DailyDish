@@ -15,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.udacity.sandarumk.dailydish.R;
+import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
 import com.udacity.sandarumk.dailydish.activities.RecipeSelectActivity;
 import com.udacity.sandarumk.dailydish.adapters.DayAdapter;
 import com.udacity.sandarumk.dailydish.datamodel.MealTime;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
+import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
 import com.udacity.sandarumk.dailydish.util.DateUtil;
 
@@ -33,8 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ThisWeekFragment extends Fragment implements DayAdapter.AddScheduleListener {
+public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEventListener {
 
+    private static final int REQUEST_CODE_RECIPE_DETAIL = 10111;
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
 
     private RecyclerView mRecyclerView;
@@ -132,6 +135,16 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.AddSchedule
     }
 
     @Override
+    public void onDeleteSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+        new ScheduleDeleteTask(this).execute(dayWrapper.getDate(), mealTime, recipe);
+    }
+
+    @Override
+    public void onSelectSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+        new RecipeDetailLoadTask(this).execute(recipe.getRecipeId());
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_RECIPE) {
@@ -200,6 +213,15 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.AddSchedule
         }
     }
 
+    private void startRecipeDetailActivity(RecipeWrapper recipeWrapper) {
+        Intent intent = new Intent(getContext(), AddRecipeActivity.class);
+        if (recipeWrapper != null) {
+            intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE, recipeWrapper);
+        }
+        startActivityForResult(intent, REQUEST_CODE_RECIPE_DETAIL);
+    }
+
+
     static class ScheduleSaveTask extends AsyncTask<Object, Void, Boolean> {
 
         private WeakReference<ThisWeekFragment> fragmentReference;
@@ -236,6 +258,75 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.AddSchedule
             if (result && fragmentReference.get() != null) {
                 fragmentReference.get().startScheduleLoad();
 
+            }
+        }
+    }
+
+    static class ScheduleDeleteTask extends AsyncTask<Object, Void, Boolean> {
+
+        private WeakReference<ThisWeekFragment> fragmentReference;
+
+        public ScheduleDeleteTask(ThisWeekFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        @Override
+        protected Boolean doInBackground(Object... objects) {
+            try {
+                ThisWeekFragment fragment = fragmentReference.get();
+                if (fragment != null) {
+                    DataProvider.deleteSchedule(fragment.getContext(), (Date) objects[0], (MealTime) objects[1], (Recipe) objects[2]);
+                } else {
+                    return false;
+                }
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result && fragmentReference.get() != null) {
+                fragmentReference.get().startScheduleLoad();
+
+            }
+        }
+    }
+
+    static class RecipeDetailLoadTask extends AsyncTask<Long, Void, RecipeWrapper> {
+
+        private WeakReference<ThisWeekFragment> fragmentReference;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        public RecipeDetailLoadTask(ThisWeekFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected RecipeWrapper doInBackground(Long... params) {
+            return DataProvider.loadRecipe(fragmentReference.get().getContext(), params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(RecipeWrapper result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null && fragmentReference.get() != null) {
+                fragmentReference.get().startRecipeDetailActivity(result);
             }
         }
     }
