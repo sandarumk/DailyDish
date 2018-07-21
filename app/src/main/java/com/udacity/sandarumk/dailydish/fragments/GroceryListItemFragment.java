@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +25,6 @@ import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemBreakdownWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
-import com.udacity.sandarumk.dailydish.util.DateUtil;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -42,22 +39,18 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class GroceryListItemFragment extends Fragment implements GroceryListItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+public class GroceryListItemFragment  extends TimeChangeFragment implements GroceryListItemRecyclerViewAdapter.OnListFragmentInteractionListener {
 
     private static final String TAG = GroceryListItemFragment.class.getSimpleName();
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    private static final String ARG_FROM = "fromDate";
-    private static final String ARG_TO = "toDate";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
 
-    private Date from;
-    private Date to;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,10 +62,8 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
     @SuppressWarnings("unused")
     public static GroceryListItemFragment newInstance(int columnCount, Date from, Date to) {
         GroceryListItemFragment fragment = new GroceryListItemFragment();
-        Bundle args = new Bundle();
+        Bundle args = getDateBundle(from,to);
         args.putInt(ARG_COLUMN_COUNT, columnCount);
-        args.putSerializable(ARG_FROM, from);
-        args.putSerializable(ARG_TO, to);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,13 +74,6 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-            from = (Date) getArguments().getSerializable(ARG_FROM);
-            to = (Date) getArguments().getSerializable(ARG_TO);
-        }
-        if (from == null || to == null) {
-            Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd();
-            from = startEnd.first;
-            to = startEnd.second;
         }
     }
 
@@ -124,7 +108,9 @@ public class GroceryListItemFragment extends Fragment implements GroceryListItem
         return view;
     }
 
-    private void startLoad() {
+    @Override
+    protected void startLoad() {
+        getActivity().setTitle("Groceries for " + getDateDescription());
         new GroceryLoadTask(this).execute(from, to);
     }
 

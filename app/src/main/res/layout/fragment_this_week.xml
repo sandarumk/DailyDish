@@ -1,10 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- A RecyclerView with some commonly used attributes -->
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/my_recycler_view"
-    android:scrollbars="vertical"
+<?xml version="1.0" encoding="utf-8"?><!-- A RecyclerView with some commonly used attributes -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ad_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-1454306136054607/5505814028">
+        <!--ads:adUnitId="ca-app-pub-3940256099942544/6300978111">-->
+    </com.google.android.gms.ads.AdView>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_above="@id/ad_view"
+        android:id="@+id/my_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</RelativeLayout>

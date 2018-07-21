@@ -20,31 +20,11 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
         <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/ad_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                ads:adSize="BANNER"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                ads:adUnitId="ca-app-pub-1454306136054607/5505814028">
-                <!--ads:adUnitId="ca-app-pub-3940256099942544/6300978111">-->
-            </com.google.android.gms.ads.AdView>
-
             <FrameLayout
-                android:layout_above="@+id/ad_view"
                 android:id="@+id/content_frame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
             </FrameLayout>
-
-
-        </RelativeLayout>
 
     </LinearLayout>
 

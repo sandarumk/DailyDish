@@ -6,8 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
-    public static Pair<Date, Date> getWeekStartEnd() {
+    public static Pair<Date, Date> geCurrentWeekStartEnd() {
+        return getWeekStartEnd(new Date());
+    }
+
+    public static Pair<Date, Date> getWeekStartEnd(Date date) {
         Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);
@@ -21,5 +26,11 @@ public class DateUtil {
         cal.add(Calendar.DATE, -1);
         Date to = cal.getTime();
         return new Pair<>(from, to);
+    }
+
+    public static boolean isThisWeek(Date date) {
+        Pair<Date, Date> currentWeekStartEnd = geCurrentWeekStartEnd();
+        return (currentWeekStartEnd.first.before(date) || currentWeekStartEnd.first.equals(date)) &&
+                (currentWeekStartEnd.second.after(date) || currentWeekStartEnd.second.equals(date));
     }
 }

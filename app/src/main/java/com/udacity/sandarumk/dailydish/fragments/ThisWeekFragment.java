@@ -1,12 +1,8 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
 import com.udacity.sandarumk.dailydish.activities.RecipeSelectActivity;
@@ -23,7 +21,6 @@ import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
-import com.udacity.sandarumk.dailydish.util.DateUtil;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -35,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEventListener {
+public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.ScheduleEventListener {
 
     private static final int REQUEST_CODE_RECIPE_DETAIL = 10111;
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
@@ -44,12 +41,6 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private static final String ARG_FROM = "fromDate";
-    private static final String ARG_TO = "toDate";
-
-    // TODO: Rename and change types of parameters
-    private Date from;
-    private Date to;
 
     private DayWrapper selectedDayWrapper;
     private MealTime selectedMealTime;
@@ -70,26 +61,9 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
     // TODO: Rename and change types and number of parameters
     public static ThisWeekFragment newInstance(Date from, Date to) {
         ThisWeekFragment fragment = new ThisWeekFragment();
-        Bundle args = new Bundle();
-        // args.putString(ARG_PARAM1, param1);
-        args.putSerializable(ARG_FROM, from);
-        args.putSerializable(ARG_TO, to);
+        Bundle args = getDateBundle(from, to);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            from = (Date) getArguments().getSerializable(ARG_FROM);
-            to = (Date) getArguments().getSerializable(ARG_TO);
-        }
-        if (from == null || to == null) {
-            Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd();
-            from = startEnd.first;
-            to = startEnd.second;
-        }
     }
 
     @Override
@@ -100,16 +74,13 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
         mLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        startScheduleLoad();
+        startLoad();
+
+        AdView adView = view.findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("C98DB9D9C73047CAD050890357647175").build();
+        adView.loadAd(adRequest);
+
         return view;
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        // if (mListener != null) {
-        //    mListener.onFragmentInteraction(uri);
-        // }
     }
 
     @Override
@@ -120,10 +91,6 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
     private void updateSchedule(List<DayWrapper> result) {
         mAdapter = new DayAdapter(result, this);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    private void startScheduleLoad() {
-        new ScheduleLoadTask(this).execute(from, to);
     }
 
     @Override
@@ -157,6 +124,12 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
             selectedMealTime = null;
             selectedDayWrapper = null;
         }
+    }
+
+    @Override
+    protected void startLoad() {
+        getActivity().setTitle("Meals for " + getDateDescription());
+        new ScheduleLoadTask(this).execute(from, to);
     }
 
     private void saveSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
@@ -256,7 +229,7 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
             super.onPostExecute(result);
             //hide progress
             if (result && fragmentReference.get() != null) {
-                fragmentReference.get().startScheduleLoad();
+                fragmentReference.get().startLoad();
 
             }
         }
@@ -296,7 +269,7 @@ public class ThisWeekFragment extends Fragment implements DayAdapter.ScheduleEve
             super.onPostExecute(result);
             //hide progress
             if (result && fragmentReference.get() != null) {
-                fragmentReference.get().startScheduleLoad();
+                fragmentReference.get().startLoad();
 
             }
         }

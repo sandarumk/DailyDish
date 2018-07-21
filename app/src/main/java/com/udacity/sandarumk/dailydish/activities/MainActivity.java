@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment;
@@ -67,15 +65,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        Pair<Date, Date> dateDatePair = DateUtil.getWeekStartEnd();
+        Pair<Date, Date> dateDatePair = DateUtil.geCurrentWeekStartEnd();
         from = dateDatePair.first;
         to = dateDatePair.second;
 
         openSelectedOption(R.id.this_week);
-
-        AdView adView = findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("C98DB9D9C73047CAD050890357647175").build();
-        adView.loadAd(adRequest);
     }
 
     @Override
