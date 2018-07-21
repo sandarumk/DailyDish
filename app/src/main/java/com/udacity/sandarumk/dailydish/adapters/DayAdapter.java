@@ -18,7 +18,8 @@ import java.util.List;
 
 public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("d\nMMMM\nEEEE");
+    private SimpleDateFormat sdfName = new SimpleDateFormat("EEEE");
+    private SimpleDateFormat sdf = new SimpleDateFormat("d\nMMMM");
 
     private List<DayWrapper> mDataset;
     private LayoutInflater inflater;
@@ -32,6 +33,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         // each data item is just a string in this case
         public CardView mCardView;
         public TextView mDateTextView;
+        public TextView mDateTextViewName;
         public FlexboxLayout flexboxBreakfast;
         public FlexboxLayout flexboxLunch;
         public FlexboxLayout flexboxDinner;
@@ -43,6 +45,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
             super(v);
             mCardView = v;
             mDateTextView = mCardView.findViewById(R.id.text_date);
+            mDateTextViewName = mCardView.findViewById(R.id.text_date_name);
             flexboxBreakfast = mCardView.findViewById(R.id.flexbox_breakfast);
             flexboxLunch = mCardView.findViewById(R.id.flexbox_lunch);
             flexboxDinner = mCardView.findViewById(R.id.flexbox_dinner);
@@ -77,6 +80,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         //holder.mTextView.setText("text");
         final DayWrapper dayWrapper = mDataset.get(position);
         holder.mDateTextView.setText(sdf.format(dayWrapper.getDate()));
+        holder.mDateTextViewName.setText(sdfName.format(dayWrapper.getDate()));
         holder.flexboxBreakfast.removeAllViews();
         final MealTime[] mealTimes = {MealTime.BREAKFAST, MealTime.LUNCH, MealTime.DINNER};
         ViewGroup[] dayViewContainers = {holder.flexboxBreakfast, holder.flexboxLunch, holder.flexboxDinner};
