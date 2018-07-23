@@ -8,6 +8,7 @@ import com.udacity.sandarumk.dailydish.dao.GroceryListItemDAO;
 import com.udacity.sandarumk.dailydish.dao.IngredientDAO;
 import com.udacity.sandarumk.dailydish.dao.MealScheduleDAO;
 import com.udacity.sandarumk.dailydish.dao.RecipeDAO;
+import com.udacity.sandarumk.dailydish.dao.ScheduleRecipeDAO;
 import com.udacity.sandarumk.dailydish.datamodel.typeconverters.DateTypeConverter;
 import com.udacity.sandarumk.dailydish.datamodel.typeconverters.MealTimeTypeConverter;
 import com.udacity.sandarumk.dailydish.datamodel.typeconverters.QuantityUnitTypeConverter;
@@ -19,4 +20,5 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract IngredientDAO ingredientDAO();
     public abstract MealScheduleDAO mealScheduleDAO();
     public abstract GroceryListItemDAO groceryListItemDAO();
+    public abstract ScheduleRecipeDAO scheduleRecipeDAO();
 }

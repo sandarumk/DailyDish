@@ -5,6 +5,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
+import android.database.Cursor;
 
 import com.udacity.sandarumk.dailydish.datamodel.MealSchedule;
 import com.udacity.sandarumk.dailydish.datamodel.MealTime;
@@ -19,7 +20,7 @@ public interface MealScheduleDAO {
     long addMealSchedule(MealSchedule mealSchedule);
 
     @Query("SELECT * from MealSchedule where schedule_id = :id")
-    MealSchedule findById(int id);
+    Cursor findById(long id);
 
     @Query("SELECT * FROM MealSchedule")
     List<MealSchedule> loadAllMealSchedules();
@@ -32,6 +33,12 @@ public interface MealScheduleDAO {
 
     @Query("SELECT * FROM MealSchedule WHERE date BETWEEN :fromDate AND :toDate")
     List<MealSchedule> loadAllMealSchedulesForGivenDateRange(Date fromDate, Date toDate);
+
+    @Query("SELECT * FROM MealSchedule WHERE date BETWEEN :fromDate AND :toDate ORDER BY date ASC")
+    Cursor loadForGivenDateRange(Date fromDate, Date toDate);
+
+    @Query("SELECT * FROM MealSchedule ")
+    Cursor loadAll();
 
     @Update
     void updateMealSchedule(MealSchedule... mealSchedules);

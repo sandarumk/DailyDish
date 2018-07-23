@@ -3,7 +3,7 @@
     package="com.udacity.sandarumk.dailydish">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".DailyDishApplication"
@@ -28,7 +28,17 @@
         <activity
             android:name=".activities.RecipeSelectActivity"
             android:label="@string/title_activity_recipe_select"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+
+        <provider
+            android:name=".providers.ScheduleContentProvider"
+            android:authorities="com.udacity.sandarumk.dailydish"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:label="ScheduleContentProvider"
+            android:readPermission="com.udacity.sandarumk.dailydish.READ"
+            android:writePermission="com.udacity.sandarumk.dailydish.WRITE" />
     </application>
+
 
 </manifest>
