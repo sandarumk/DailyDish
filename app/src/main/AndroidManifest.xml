@@ -38,6 +38,19 @@
             android:label="ScheduleContentProvider"
             android:readPermission="com.udacity.sandarumk.dailydish.READ"
             android:writePermission="com.udacity.sandarumk.dailydish.WRITE" />
+        <receiver
+            android:name=".widgets.DailyDishAppWidgetProvider"
+            android:label="Daily Dish Today" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget" />
+        </receiver>
+
+        <service android:name=".widgets.ScheduleWidgetService" />
     </application>
 
 

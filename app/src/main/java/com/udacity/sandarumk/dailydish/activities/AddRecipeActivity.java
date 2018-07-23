@@ -34,6 +34,7 @@ import java.util.List;
 public class AddRecipeActivity extends AppCompatActivity {
 
     public static final String INTENT_EXTRA_RECIPE = "recipeWrapper";
+    public static final String INTENT_EXTRA_RECIPE_ID = "recipeWrapperId";
 
     private RecipeWrapper recipeWrapper;
 
@@ -50,6 +51,8 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra(INTENT_EXTRA_RECIPE)) {
             recipeWrapper = (RecipeWrapper) getIntent().getSerializableExtra(INTENT_EXTRA_RECIPE);
+        } else if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_ID)) {
+            new RecipeDetailLoadTask(this).execute(getIntent().getLongExtra(INTENT_EXTRA_RECIPE_ID, 0));
         } else {
             recipeWrapper = RecipeWrapper.builder()
                     .recipe(new Recipe())
@@ -70,7 +73,9 @@ public class AddRecipeActivity extends AppCompatActivity {
         containerIngredients = findViewById(R.id.ingredients_layout);
         textIngredients = findViewById(R.id.text_ingredients);
 
-        updateUI();
+        if (recipeWrapper != null) {
+            updateUI();
+        }
     }
 
     @Override
@@ -253,6 +258,36 @@ public class AddRecipeActivity extends AppCompatActivity {
                 Intent data = new Intent();
                 addRecipeActivity.setResult(RESULT_OK, data);
                 addRecipeActivity.finish();
+            }
+        }
+    }
+
+    static class RecipeDetailLoadTask extends AsyncTask<Long, Void, RecipeWrapper> {
+
+        private WeakReference<AddRecipeActivity> activityReference;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        public RecipeDetailLoadTask(AddRecipeActivity activity) {
+            activityReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected RecipeWrapper doInBackground(Long... params) {
+            return DataProvider.loadRecipe(activityReference.get(), params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(RecipeWrapper result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null && activityReference.get() != null) {
+                activityReference.get().recipeWrapper = result;
+                activityReference.get().updateUI();
             }
         }
     }

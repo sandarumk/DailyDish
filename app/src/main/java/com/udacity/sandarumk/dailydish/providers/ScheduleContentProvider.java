@@ -15,6 +15,9 @@ import com.udacity.sandarumk.dailydish.dao.ScheduleRecipeDAO;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
 
 import java.text.SimpleDateFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ScheduleContentProvider extends ContentProvider {
 
@@ -43,7 +46,7 @@ public class ScheduleContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(@NonNull final Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable final String[] selectionArgs, @Nullable String sortOrder) {
         final int code = URI_MATCHER.match(uri);
         if (code == SCHEDULE_DIR || code == SCHEDULE_ID) {
             final Context context = getContext();
@@ -73,24 +76,51 @@ public class ScheduleContentProvider extends ContentProvider {
             if (context == null) {
                 return null;
             }
-            ScheduleRecipeDAO dao = DataProvider.getDatabase(context).scheduleRecipeDAO();
-            Cursor cursor;
+            final ScheduleRecipeDAO dao = DataProvider.getDatabase(context).scheduleRecipeDAO();
+            final Cursor[] cursor = new Cursor[1];
             if (code == SCHEDULE_RECIPE_DIR) {
                 if (selection != null && selection.contains(ScheduleContract.Schedules.DATE)) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    ExecutorService service = Executors.newSingleThreadExecutor();
+                    service.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                cursor[0] = dao.loadByMealScheduleId(sdf.parse(selectionArgs[0]), sdf.parse(selectionArgs[1]));
+                            } catch (Exception e) {
+                                cursor[0] = dao.loadAll();
+                            }
+                        }
+                    });
+
+                    service.shutdown();
                     try {
-                        cursor = dao.loadByMealScheduleId(sdf.parse(selectionArgs[0]), sdf.parse(selectionArgs[1]));
-                    } catch (Exception e) {
-                        cursor = dao.loadAll();
+                        service.awaitTermination(5, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+
                 } else {
-                    cursor = dao.loadAll();
+                    cursor[0] = dao.loadAll();
                 }
             } else {
-                cursor = dao.loadByMealScheduleId(ContentUris.parseId(uri));
+                ExecutorService service = Executors.newSingleThreadExecutor();
+                service.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        cursor[0] = dao.loadByMealScheduleId(ContentUris.parseId(uri));
+                    }
+                });
+                service.shutdown();
+                try {
+                    service.awaitTermination(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
-            cursor.setNotificationUri(context.getContentResolver(), uri);
-            return cursor;
+            cursor[0].setNotificationUri(context.getContentResolver(), uri);
+            return cursor[0];
         } else {
             throw new IllegalArgumentException("Unknown URI: " + uri);
         }
