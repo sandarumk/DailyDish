@@ -6,7 +6,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.udacity.sandarumk.dailydish.activities.MainActivity;
+
 public class DailyDishAppWidgetProvider extends AppWidgetProvider {
+
+    public static String WIDGET_CLICK_ACTION = "WIDGET_CLICK_ACTION";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -22,5 +26,14 @@ public class DailyDishAppWidgetProvider extends AppWidgetProvider {
 
         // Update the widgets via the service
         context.startService(intent);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (WIDGET_CLICK_ACTION.equals(intent.getAction())) {
+            Intent activityIntent = new Intent(context, MainActivity.class);
+            context.startActivity(activityIntent);
+        }
     }
 }

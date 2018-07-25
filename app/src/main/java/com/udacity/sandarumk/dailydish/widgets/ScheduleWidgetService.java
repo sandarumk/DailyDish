@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.udacity.sandarumk.dailydish.R;
-import com.udacity.sandarumk.dailydish.activities.MainActivity;
 import com.udacity.sandarumk.dailydish.datamodel.MealTime;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
@@ -113,13 +112,12 @@ public class ScheduleWidgetService extends Service {
             }
 
             // Register an onClickListener
-            Intent clickIntent = new Intent(this.getApplicationContext(), MainActivity.class);
-
-            clickIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
+            Intent clickIntent = new Intent(this.getApplicationContext(), DailyDishAppWidgetProvider.class);
+            clickIntent.setAction(DailyDishAppWidgetProvider.WIDGET_CLICK_ACTION);
+//            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
 //            clickIntent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE_ID, Long.parseLong(mName));
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, clickIntent, 0);
             remoteViews.setOnClickPendingIntent(R.id.appwidget_layout_text, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
             //
