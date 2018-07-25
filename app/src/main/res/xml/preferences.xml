@@ -1,15 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.preference.SwitchPreferenceCompat
-        android:defaultValue="true"
-        android:key="allow_notifications"
-        android:title="@string/notification_setting" />
+    <!--<android.support.v7.preference.SwitchPreferenceCompat-->
+        <!--android:defaultValue="true"-->
+        <!--android:key="allow_notifications"-->
+        <!--android:title="@string/notification_setting" />-->
 
     <ListPreference
         android:defaultValue="1"
         android:entries="@array/week_type_list_titles"
         android:entryValues="@array/week_type_list_values"
-        android:key="choose_week_type"
+        android:key="week_type"
         android:title="@string/week_type_setting" />
 
 </PreferenceScreen>

@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum QuantityUnit {
+    UNITS("units"),
     GRAMS("g"),
     KILO_GRAMS("kg"),
     LITRES("l"),
     MILLI_LITRES("ml"),
-    UNITS("units"),
     OUNCE("oz"),
     POUND("p"),
     PINT("pint");

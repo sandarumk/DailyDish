@@ -35,7 +35,7 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
             to = (Date) getArguments().getSerializable(ARG_TO);
         }
         if (from == null || to == null) {
-            Pair<Date, Date> startEnd = DateUtil.geCurrentWeekStartEnd();
+            Pair<Date, Date> startEnd = DateUtil.geCurrentWeekStartEnd(this.getContext());
             from = startEnd.first;
             to = startEnd.second;
         }
@@ -84,18 +84,21 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
     public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, monthOfYear, dayOfMonth);
-        Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd(cal.getTime());
+        Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd(this.getContext(), cal.getTime());
         from = startEnd.first;
         to = startEnd.second;
         startLoad();
+        if (getActivity() instanceof OnDateChangeListener) {
+            ((OnDateChangeListener) getActivity()).onDateChange(from, to);
+        }
     }
 
-    protected String getDateDescription(){
+    protected String getDateDescription() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM");
-        boolean thisWeek = DateUtil.isThisWeek(from);
-        if(thisWeek) {
+        boolean thisWeek = DateUtil.isThisWeek(this.getContext(), from);
+        if (thisWeek) {
             return "this week";
-        }else{
+        } else {
             return sdf.format(from) + " - " + sdf.format(to);
         }
 
@@ -103,4 +106,7 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
 
     protected abstract void startLoad();
 
+    public interface OnDateChangeListener {
+        void onDateChange(Date from, Date to);
+    }
 }

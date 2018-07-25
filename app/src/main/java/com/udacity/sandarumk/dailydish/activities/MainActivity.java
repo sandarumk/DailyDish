@@ -18,11 +18,12 @@ import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
 import com.udacity.sandarumk.dailydish.fragments.SettingsFragment;
 import com.udacity.sandarumk.dailydish.fragments.ThisWeekFragment;
+import com.udacity.sandarumk.dailydish.fragments.TimeChangeFragment;
 import com.udacity.sandarumk.dailydish.util.DateUtil;
 
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimeChangeFragment.OnDateChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        Pair<Date, Date> dateDatePair = DateUtil.geCurrentWeekStartEnd();
+        Pair<Date, Date> dateDatePair = DateUtil.geCurrentWeekStartEnd(this);
         from = dateDatePair.first;
         to = dateDatePair.second;
 
@@ -121,5 +122,11 @@ public class MainActivity extends AppCompatActivity {
         if (getFragmentManager().getBackStackEntryCount() == 0) {
             finish();
         }
+    }
+
+    @Override
+    public void onDateChange(Date from, Date to) {
+        this.from = from;
+        this.to = to;
     }
 }
