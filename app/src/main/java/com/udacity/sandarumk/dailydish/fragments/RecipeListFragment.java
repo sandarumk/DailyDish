@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,11 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,6 +28,7 @@ import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +37,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RecipeListFragment extends Fragment {
+public class RecipeListFragment extends Fragment implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -40,7 +46,7 @@ public class RecipeListFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
-
+    private List<Recipe> allRecipes;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,6 +72,7 @@ public class RecipeListFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        setHasOptionsMenu(true);
     }
 
     private void selectRecipe(Recipe item) {
@@ -101,6 +108,16 @@ public class RecipeListFragment extends Fragment {
         loadRecipes();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_recipe_list, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint("Search");
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void startRecipeDetailActivity(RecipeWrapper recipeWrapper) {
@@ -145,6 +162,46 @@ public class RecipeListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String newText) {
+        if (newText == null || newText.trim().isEmpty()) {
+            updateList(allRecipes);
+            return false;
+        }
+        updateList(filterRecipes(newText));
+        return false;
+    }
+
+    @NonNull
+    private List<Recipe> filterRecipes(String newText) {
+        List<Recipe> filtered = new ArrayList<>();
+        for (Recipe recipe : allRecipes) {
+            if (recipe.getRecipeName().toLowerCase().contains(newText.toLowerCase())) {
+                filtered.add(recipe);
+            }
+        }
+        return filtered;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return this.onQueryTextSubmit(newText);
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+        return true;
+    }
+
+    private void updateList(List<Recipe> result) {
+        this.recyclerView.setAdapter(new RecipeListAdapter(result, this.mListener));
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -187,7 +244,8 @@ public class RecipeListFragment extends Fragment {
             if (result != null) {
                 RecipeListFragment recipeListFragment = fragmentReference.get();
                 if (recipeListFragment != null) {
-                    recipeListFragment.recyclerView.setAdapter(new RecipeListAdapter(result, recipeListFragment.mListener));
+                    recipeListFragment.allRecipes = result;
+                    recipeListFragment.updateList(result);
                 }
             }
         }

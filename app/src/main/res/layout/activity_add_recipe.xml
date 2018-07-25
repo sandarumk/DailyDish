@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <ScrollView
-        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
 
 
         <LinearLayout
@@ -30,16 +30,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="8dp"
-                android:inputType="textCapWords"
-                android:hint="Recipe Name"/>
+                android:hint="Recipe Name"
+                android:inputType="textCapWords" />
 
             <TextView
                 android:id="@+id/text_ingredients"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ingredients"
+                android:drawableRight="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                android:drawableRight="@mipmap/ic_add"/>
+                android:text="@string/ingredients"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:id="@+id/ingredients_layout"
@@ -51,10 +53,12 @@
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="12dp"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Steps" />
+                android:layout_marginTop="12dp"
+                android:text="Steps"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/edit_text_steps"
@@ -62,10 +66,12 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_marginTop="12dp"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Notes" />
+                android:layout_marginTop="12dp"
+                android:text="Notes"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/edit_text_notes"

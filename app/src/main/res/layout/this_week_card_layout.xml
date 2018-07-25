@@ -15,6 +15,7 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_date_name"
+            style="@style/AppTheme.TextSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -23,21 +24,22 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:ellipsize="end"
             android:gravity="center"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:fontFamily="@font/roboto"
             android:lines="1"
+            android:textSize="24sp"
             app:autoSizeMaxTextSize="80sp"
             app:autoSizeMinTextSize="10sp"
             app:autoSizeTextType="uniform"
-            android:ellipsize="end"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Wednesday" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_date"
+            style="@style/AppTheme.TextSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -84,13 +86,14 @@
 
             <TextView
                 android:id="@+id/text_breakfast"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                app:fontFamily="@font/roboto"
-                android:text="Breakfast" />
+                android:text="Breakfast"
+                app:fontFamily="@font/roboto" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -108,14 +111,15 @@
 
             <TextView
                 android:id="@+id/text_lunch"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
                 android:onClick="addLunch"
-                app:fontFamily="@font/roboto"
-                android:text="Lunch" />
+                android:text="Lunch"
+                app:fontFamily="@font/roboto" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -133,20 +137,14 @@
 
             <TextView
                 android:id="@+id/text_dinner"
+                style="@style/AppTheme.TextSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                app:fontFamily="@font/roboto"
-                android:text="Dinner" />
-
-            <TextView
-                android:id="@+id/info0_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="" />
-
+                android:text="Dinner"
+                app:fontFamily="@font/roboto" />
 
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.udacity.sandarumk.dailydish.adapters;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_grocerylistitem, parent, false);
+                .inflate(R.layout.grocery_list_item_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -42,6 +43,16 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
         holder.mIdView.setText(groceryItemWrapper.getIngredientName());
         holder.mContentView.setText(groceryItemWrapper.quantityText());
         holder.mCheckBox.setChecked(groceryItemWrapper.isChecked());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!holder.mCheckBox.isChecked()) {
+                holder.mIdView.setTextAppearance(R.style.AppTheme_TextPrimary);
+                holder.mContentView.setTextAppearance(R.style.AppTheme_TextPrimary);
+            } else {
+                holder.mIdView.setTextAppearance(R.style.AppTheme_TextSecondary);
+                holder.mContentView.setTextAppearance(R.style.AppTheme_TextSecondary);
+            }
+        }
 
         if (null != mListener) {
             holder.mView.setOnClickListener(new View.OnClickListener() {

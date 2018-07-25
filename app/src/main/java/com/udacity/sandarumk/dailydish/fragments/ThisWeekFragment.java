@@ -1,15 +1,19 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.Pair;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -37,12 +41,13 @@ import java.util.Map;
 public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.ScheduleEventListener {
 
     private static final int REQUEST_CODE_RECIPE_DETAIL = 10111;
+    public static final String ADD_RECIPE_MESSAGE = "Add some recipes to today's meal";
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
 
     private RecyclerView mRecyclerView;
     private DayAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    private FloatingActionButton fab;
 
     private DayWrapper selectedDayWrapper;
     private MealTime selectedMealTime;
@@ -83,6 +88,14 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("C98DB9D9C73047CAD050890357647175").build();
         adView.loadAd(adRequest);
 
+        fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCook();
+            }
+        });
+
         return view;
     }
 
@@ -108,6 +121,71 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
             mAdapter.setDataset(result);
             mAdapter.notifyDataSetChanged();
         }
+        DayWrapper todaysData = getTodaysData();
+        if (todaysData != null && todaysData.getSchedule() != null && !todaysData.getSchedule().isEmpty()) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+    }
+
+    private DayWrapper getTodaysData() {
+        List<DayWrapper> result = mAdapter.getDataset();
+        Pair<Date, Date> todayRange = DateUtil.getSingleDayRange(new Date());
+        for (int i = 0; i < result.size(); i++) {
+            DayWrapper dayWrapper = result.get(i);
+            if (dayWrapper.getDate().equals(todayRange.first)) {
+                return dayWrapper;
+            }
+        }
+        return null;
+    }
+
+    private void startCook() {
+        DayWrapper todaysData = getTodaysData();
+        if (todaysData != null && todaysData.getSchedule() != null && !todaysData.getSchedule().isEmpty()) {
+            Map<MealTime, List<Recipe>> schedule = todaysData.getSchedule();
+            Map<Long, Recipe> recipeMap = new HashMap<>();
+            for (Map.Entry<MealTime, List<Recipe>> entry : schedule.entrySet()) {
+                if (entry.getValue() != null) {
+                    for (Recipe recipe : entry.getValue()) {
+                        recipeMap.put(recipe.getRecipeId(), recipe);
+                    }
+                }
+            }
+
+            if (recipeMap.size() == 0) {
+                Toast.makeText(this.getContext(), ADD_RECIPE_MESSAGE, Toast.LENGTH_LONG).show();
+            } else if (recipeMap.size() == 1) {
+                startShowingRecipeDetail(new ArrayList<>(recipeMap.values()).get(0).getRecipeId());
+            } else {
+                showRecipeSelectionDialog(new ArrayList<>(recipeMap.values()));
+            }
+        } else {
+            Toast.makeText(this.getContext(), ADD_RECIPE_MESSAGE, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void showRecipeSelectionDialog(final List<Recipe> recipes) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Select recipe to start");
+
+        // add a list
+        String[] recipeNames = new String[recipes.size()];
+        for (int i = 0; i < recipes.size(); i++) {
+            recipeNames[i] = recipes.get(i).getRecipeName();
+        }
+        builder.setItems(recipeNames, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startShowingRecipeDetail(recipes.get(which).getRecipeId());
+            }
+        });
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     @Override
@@ -128,7 +206,11 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     @Override
     public void onSelectSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
         selectedPosition = position;
-        new RecipeDetailLoadTask(this).execute(recipe.getRecipeId());
+        startShowingRecipeDetail(recipe.getRecipeId());
+    }
+
+    private void startShowingRecipeDetail(long recipeId) {
+        new RecipeDetailLoadTask(this).execute(recipeId);
     }
 
     @Override

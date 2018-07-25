@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemBreakdownWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
+import com.udacity.sandarumk.dailydish.util.ExtendedDateFormat;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -93,6 +95,8 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                    DividerItemDecoration.VERTICAL));
         }
 
 
@@ -209,7 +213,7 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
             });
 
             //TODO append 21st, or 30th to the formatter
-            SimpleDateFormat sdf = new SimpleDateFormat("dd");
+            SimpleDateFormat sdf = new ExtendedDateFormat("ddG");
 
             for (GroceryItemBreakdownWrapper breakdownWrapper : breakdownWrappers) {
                 View row = layoutInflater.inflate(R.layout.grocery_breakdown_layout_row, containerBreakdown, false);

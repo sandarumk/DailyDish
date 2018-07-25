@@ -136,6 +136,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         this.mDataset = dataset;
     }
 
+    public List<DayWrapper> getDataset() {
+        return mDataset;
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {

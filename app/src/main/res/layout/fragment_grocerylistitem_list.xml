@@ -3,19 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
 <android.support.v7.widget.RecyclerView
     android:id="@+id/list"
-    android:name="com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.GroceryListItemFragment"
-    tools:listitem="@layout/fragment_grocerylistitem" >
+    tools:listitem="@layout/grocery_list_item_row" >
 
 </android.support.v7.widget.RecyclerView>
 

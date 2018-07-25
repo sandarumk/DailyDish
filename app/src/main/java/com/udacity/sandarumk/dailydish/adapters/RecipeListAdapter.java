@@ -42,17 +42,20 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         holder.mContentView.setText(mValues.get(position).getRecipeNotes());
         String mealTimeText = "";
         int mealTime = mValues.get(position).getMealTime();
-        if (mealTime >> 2 == 1) {
-            mealTimeText += "B";
+        if ((mealTime / 100) == 1) {
+            mealTimeText += "B|";
         }
-        if ((mealTime >> 1) % 2 == 1) {
-            mealTimeText += "L";
+        if ((mealTime / 10)% 10 == 1) {
+            mealTimeText += "L|";
         }
         if (mealTime % 2 == 1) {
-            mealTimeText += "D";
+            mealTimeText += "D|";
         }
         if (mealTimeText.isEmpty()) {
             mealTimeText = "--";
+        }
+        if(mealTimeText.endsWith("|")){
+            mealTimeText = mealTimeText.substring(0,mealTimeText.length() -1);
         }
         holder.mIconView.setText(mealTimeText);
 
@@ -71,6 +74,10 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public List<Recipe> getValues() {
+        return mValues;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

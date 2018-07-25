@@ -22,7 +22,7 @@ public class DateUtil {
         cal.clear(Calendar.MILLISECOND);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int weekType = Integer.parseInt(prefs.getString("week_type", "0"));
+        int weekType = Integer.parseInt(prefs.getString("week_type", "1"));
 
         // get start of this week in milliseconds
         cal.set(Calendar.DAY_OF_WEEK, weekType);
