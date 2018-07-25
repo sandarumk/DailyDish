@@ -34,6 +34,10 @@ public interface MealScheduleDAO {
     @Query("SELECT * FROM MealSchedule WHERE date BETWEEN :fromDate AND :toDate")
     List<MealSchedule> loadAllMealSchedulesForGivenDateRange(Date fromDate, Date toDate);
 
+    @Query("SELECT * FROM MealSchedule WHERE date=:date AND meal_time=:mealTimeId AND recipe_id=:recipeId")
+    List<MealSchedule> findMealSchedules(Date date, int mealTimeId, long recipeId);
+
+
     @Query("SELECT * FROM MealSchedule WHERE date BETWEEN :fromDate AND :toDate ORDER BY date ASC")
     Cursor loadForGivenDateRange(Date fromDate, Date toDate);
 
@@ -48,4 +52,7 @@ public interface MealScheduleDAO {
 
     @Query("DELETE FROM MealSchedule WHERE date=:date AND meal_time=:mealTimeId AND recipe_id=:recipeId")
     void deleteMealSchedule(Date date, int mealTimeId, long recipeId);
+
+    @Query("SELECT DISTINCT meal_time FROM MealSchedule WHERE recipe_id=:recipeId ORDER BY meal_time ASC")
+    List<MealTime> findDistinctMealTimeForRecipe(long recipeId);
 }

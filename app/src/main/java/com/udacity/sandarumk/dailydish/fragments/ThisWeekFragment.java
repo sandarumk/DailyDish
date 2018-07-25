@@ -3,6 +3,7 @@ package com.udacity.sandarumk.dailydish.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
+import com.udacity.sandarumk.dailydish.util.DateUtil;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -38,12 +40,14 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private DayAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
 
     private DayWrapper selectedDayWrapper;
     private MealTime selectedMealTime;
+
+    private int selectedPosition;
 
     // private OnFragmentInteractionListener mListener;
     public ThisWeekFragment() {
@@ -58,7 +62,6 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
      * @param to   starting date
      * @return A new instance of fragment ThisWeekFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ThisWeekFragment newInstance(Date from, Date to) {
         ThisWeekFragment fragment = new ThisWeekFragment();
         Bundle args = getDateBundle(from, to);
@@ -89,25 +92,42 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     }
 
     private void updateSchedule(List<DayWrapper> result) {
-        mAdapter = new DayAdapter(result, this);
-        mRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new DayAdapter(result, this);
+            mRecyclerView.setAdapter(mAdapter);
+
+            Pair<Date, Date> todayRange = DateUtil.getSingleDayRange(new Date());
+            for (int i = 0; i < result.size(); i++) {
+                DayWrapper dayWrapper = result.get(i);
+                if (dayWrapper.getDate().equals(todayRange.first)) {
+                    mRecyclerView.scrollToPosition(i);
+                    break;
+                }
+            }
+        } else {
+            mAdapter.setDataset(result);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
-    public void onAddSchedule(DayWrapper dayWrapper, MealTime mealTime) {
+    public void onAddSchedule(int position, DayWrapper dayWrapper, MealTime mealTime) {
         selectedDayWrapper = dayWrapper;
         selectedMealTime = mealTime;
+        selectedPosition = position;
         Intent intent = new Intent(this.getContext(), RecipeSelectActivity.class);
         startActivityForResult(intent, REQUEST_CODE_SELECT_RECIPE);
     }
 
     @Override
-    public void onDeleteSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+    public void onDeleteSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+        selectedPosition = position;
         new ScheduleDeleteTask(this).execute(dayWrapper.getDate(), mealTime, recipe);
     }
 
     @Override
-    public void onSelectSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+    public void onSelectSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
+        selectedPosition = position;
         new RecipeDetailLoadTask(this).execute(recipe.getRecipeId());
     }
 
@@ -135,6 +155,15 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     private void saveSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
         new ScheduleSaveTask(this).execute(dayWrapper.getDate(), mealTime, recipe);
     }
+
+    private void startRecipeDetailActivity(RecipeWrapper recipeWrapper) {
+        Intent intent = new Intent(getContext(), AddRecipeActivity.class);
+        if (recipeWrapper != null) {
+            intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE, recipeWrapper);
+        }
+        startActivityForResult(intent, REQUEST_CODE_RECIPE_DETAIL);
+    }
+
 
     static class ScheduleLoadTask extends AsyncTask<Date, Void, List<DayWrapper>> {
 
@@ -185,15 +214,6 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
             }
         }
     }
-
-    private void startRecipeDetailActivity(RecipeWrapper recipeWrapper) {
-        Intent intent = new Intent(getContext(), AddRecipeActivity.class);
-        if (recipeWrapper != null) {
-            intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE, recipeWrapper);
-        }
-        startActivityForResult(intent, REQUEST_CODE_RECIPE_DETAIL);
-    }
-
 
     static class ScheduleSaveTask extends AsyncTask<Object, Void, Boolean> {
 

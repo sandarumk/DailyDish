@@ -106,7 +106,23 @@ public class DataProvider {
         mealSchedule.setDate(date);
         mealSchedule.setRecipeId(recipe.getRecipeId());
         mealSchedule.setScheduleID(getDatabase(context).mealScheduleDAO().addMealSchedule(mealSchedule));
+
+        updateRecipeMealTime(context, recipe);
+
         updateGroceryList(context, date, recipe);
+    }
+
+    private static void updateRecipeMealTime(Context context, Recipe recipe) {
+        //update meal time for the recipe
+        Recipe storedRecipe = getDatabase(context).recipeDAO().findById(recipe.getRecipeId());
+        List<MealTime> distinctMealTimeForRecipe = getDatabase(context).mealScheduleDAO().findDistinctMealTimeForRecipe(recipe.getRecipeId());
+
+        String mealTimeStr = "";
+        mealTimeStr += distinctMealTimeForRecipe.contains(MealTime.BREAKFAST) ? "1" : "0";
+        mealTimeStr += distinctMealTimeForRecipe.contains(MealTime.LUNCH) ? "1" : "0";
+        mealTimeStr += distinctMealTimeForRecipe.contains(MealTime.DINNER) ? "1" : "0";
+        storedRecipe.setMealTime(Integer.parseInt(mealTimeStr));
+        getDatabase(context).recipeDAO().updateRecipe(storedRecipe);
     }
 
     private static void updateGroceryList(Context context, Date date, Recipe recipe) {
@@ -122,8 +138,13 @@ public class DataProvider {
     }
 
     public void deleteSchedule(Context context, Date date, MealTime mealTime, Recipe recipe) {
-        //TODO delete meal schedule
-        getDatabase(context).mealScheduleDAO().deleteMealSchedule(date, mealTime.getMealTime(), recipe.getRecipeId());
+        //delete only one meal schedule
+        List<MealSchedule> mealSchedules = getDatabase(context).mealScheduleDAO().findMealSchedules(date, mealTime.getMealTime(), recipe.getRecipeId());
+        if (!mealSchedules.isEmpty()) {
+            getDatabase(context).mealScheduleDAO().deleteMealSchedule(mealSchedules.get(0));
+        }
+
+        updateRecipeMealTime(context, recipe);
 
         //TODO delete grocery list items with all recipe.ingredients
     }

@@ -12,6 +12,7 @@ import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datamodel.MealTime;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
+import com.udacity.sandarumk.dailydish.util.ExtendedDateFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
 
     private SimpleDateFormat sdfName = new SimpleDateFormat("EEEE");
-    private SimpleDateFormat sdf = new SimpleDateFormat("d\nMMMM");
+    private SimpleDateFormat sdf = new ExtendedDateFormat("dG\nMMMM");
 
     private List<DayWrapper> mDataset;
     private LayoutInflater inflater;
@@ -74,7 +75,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         //holder.mTextView.setText("text");
@@ -95,13 +96,13 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
                         chip.findViewById(R.id.btn_remove).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                scheduleEventListener.onDeleteSchedule(dayWrapper, mealTime, recipe);
+                                scheduleEventListener.onDeleteSchedule(position, dayWrapper, mealTime, recipe);
                             }
                         });
                         chip.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                scheduleEventListener.onSelectSchedule(dayWrapper, mealTime, recipe);
+                                scheduleEventListener.onSelectSchedule(position, dayWrapper, mealTime, recipe);
                             }
                         });
                     }
@@ -118,7 +119,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
                 buttonContainers[i].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        scheduleEventListener.onAddSchedule(dayWrapper, mealTimes[finalI]);
+                        scheduleEventListener.onAddSchedule(position, dayWrapper, mealTimes[finalI]);
                     }
                 });
             }
@@ -131,6 +132,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         return chip;
     }
 
+    public void setDataset(List<DayWrapper> dataset) {
+        this.mDataset = dataset;
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
@@ -138,10 +143,10 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
     }
 
     public interface ScheduleEventListener {
-        void onAddSchedule(DayWrapper dayWrapper, MealTime mealTime);
+        void onAddSchedule(int position, DayWrapper dayWrapper, MealTime mealTime);
 
-        void onDeleteSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
+        void onDeleteSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
 
-        void onSelectSchedule(DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
+        void onSelectSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe);
     }
 }

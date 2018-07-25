@@ -94,11 +94,11 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
     }
 
     protected String getDateDescription() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM");
         boolean thisWeek = DateUtil.isThisWeek(this.getContext(), from);
         if (thisWeek) {
             return "this week";
         } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM");
             return sdf.format(from) + " - " + sdf.format(to);
         }
 
