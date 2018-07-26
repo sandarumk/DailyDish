@@ -8,8 +8,8 @@
     android:lines="1"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp"
+    android:paddingLeft="@dimen/padding_tiny"
+    android:paddingRight="@dimen/padding_tiny"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 

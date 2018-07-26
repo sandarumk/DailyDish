@@ -3,17 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="10dp">
+    android:paddingLeft="@dimen/padding_extra_large"
+    android:paddingRight="@dimen/padding_extra_large"
+    android:paddingTop="@dimen/padding_middle">
 
     <EditText
         android:id="@+id/edit_grocery_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:hint="Item name"
-        android:text="" />
+        android:hint="Item name" />
 
 
     <android.support.v7.widget.AppCompatSpinner

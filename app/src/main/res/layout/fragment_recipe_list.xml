@@ -10,8 +10,8 @@
         android:id="@+id/recipe_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         app:layoutManager="LinearLayoutManager"
         tools:context=".fragments.RecipeListFragment"
         tools:listitem="@layout/fragment_recipe">

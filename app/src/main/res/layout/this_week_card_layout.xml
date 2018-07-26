@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/margin_small"
     app:cardCornerRadius="10dp">
 
     <android.support.constraint.ConstraintLayout
@@ -18,16 +18,16 @@
             style="@style/AppTheme.TextSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
             android:ellipsize="end"
             android:gravity="center"
             android:lines="1"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_title"
             app:autoSizeMaxTextSize="80sp"
             app:autoSizeMinTextSize="10sp"
             app:autoSizeTextType="uniform"
@@ -42,15 +42,15 @@
             style="@style/AppTheme.TextSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
             android:ellipsize="end"
             android:gravity="center"
             android:lines="2"
-            android:textSize="24sp"
+            android:textSize="@dimen/font_size_title"
             app:fontFamily="@font/roboto"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,10 +62,10 @@
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             android:orientation="vertical"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,7 @@
                 android:id="@+id/flexbox_breakfast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexWrap="wrap">
@@ -92,7 +92,7 @@
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                android:text="Breakfast"
+                android:text="@string/breakfast"
                 app:fontFamily="@font/roboto" />
 
             <FrameLayout
@@ -104,10 +104,10 @@
                 android:id="@+id/flexbox_lunch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
-                app:flexWrap="wrap"></com.google.android.flexbox.FlexboxLayout>
+                app:flexWrap="wrap" />
 
             <TextView
                 android:id="@+id/text_lunch"
@@ -118,7 +118,7 @@
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
                 android:onClick="addLunch"
-                android:text="Lunch"
+                android:text="@string/lunch"
                 app:fontFamily="@font/roboto" />
 
             <FrameLayout
@@ -130,10 +130,10 @@
                 android:id="@+id/flexbox_dinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
-                app:flexWrap="wrap"></com.google.android.flexbox.FlexboxLayout>
+                app:flexWrap="wrap" />
 
             <TextView
                 android:id="@+id/text_dinner"
@@ -143,7 +143,7 @@
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                android:text="Dinner"
+                android:text="@string/dinner"
                 app:fontFamily="@font/roboto" />
 
         </LinearLayout>

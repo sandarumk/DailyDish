@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="2dp"
+    android:padding="@dimen/padding_tiny"
     android:weightSum="7">
 
     <TextView
         android:id="@+id/text_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="@dimen/margin_tiny"
         android:layout_weight="1"
         android:gravity="right"
-        android:textSize="16sp"
+        android:textSize="@dimen/font_size_medium"
         tools:text="26th" />
 
 
@@ -22,9 +22,9 @@
         android:id="@+id/text_recipe_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="@dimen/margin_tiny"
         android:layout_weight="4"
-        android:textSize="16sp"
+        android:textSize="@dimen/font_size_medium"
         tools:text="Fried Rice" />
 
 
@@ -32,10 +32,10 @@
         android:id="@+id/text_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="@dimen/margin_tiny"
         android:layout_weight="2"
         android:gravity="right"
-        android:textSize="16sp"
+        android:textSize="@dimen/font_size_medium"
         tools:text="3 units" />
 
 </LinearLayout>

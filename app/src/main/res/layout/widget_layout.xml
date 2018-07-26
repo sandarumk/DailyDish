@@ -10,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:text="Today"
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_large"
+        android:paddingStart="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_small"
+        android:text="@string/today"
+        android:textColor="@color/text_light"
+        android:textSize="@dimen/font_size_extra_large" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -23,17 +24,17 @@
 
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="@dimen/padding_extra_small">
 
         <TextView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="2dp"
+            android:layout_margin="@dimen/margin_tiny"
             android:background="@drawable/meal_icon_background"
             android:gravity="center"
-            android:text="B"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
+            android:text="@string/breakfast_letter"
+            android:textColor="@color/text_light"
+            android:textSize="@dimen/font_size_widget_icon"
             android:textStyle="bold" />
 
 
@@ -41,36 +42,34 @@
             android:id="@+id/text_widget_b_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="@dimen/margin_extra_large"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="Loading..." />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_b_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_b_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_b_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:padding="4dp"
-            android:text="More..." />
+            android:layout_marginLeft="@dimen/margin_middle"
+            android:layout_marginStart="@dimen/margin_middle"
+            android:padding="@dimen/padding_extra_small"
+            android:text="@string/more" />
 
     </LinearLayout>
 
@@ -79,17 +78,17 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="@dimen/padding_extra_small">
 
         <TextView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="2dp"
+            android:layout_margin="@dimen/margin_tiny"
             android:background="@drawable/meal_icon_background"
             android:gravity="center"
-            android:text="L"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
+            android:text="@string/lunch_letter"
+            android:textColor="@color/text_light"
+            android:textSize="@dimen/font_size_widget_icon"
             android:textStyle="bold" />
 
 
@@ -97,36 +96,33 @@
             android:id="@+id/text_widget_l_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="@dimen/margin_extra_large"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="Loading..." />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_l_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_l_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_l_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:padding="4dp"
-            android:text="More..." />
+            android:layout_marginLeft="@dimen/margin_middle"
+            android:padding="@dimen/padding_extra_small"
+            android:text="@string/more" />
 
     </LinearLayout>
 
@@ -136,17 +132,17 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:padding="@dimen/padding_extra_small">
 
         <TextView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="2dp"
+            android:layout_margin="@dimen/margin_tiny"
             android:background="@drawable/meal_icon_background"
             android:gravity="center"
-            android:text="D"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
+            android:text="@string/dinner_letter"
+            android:textColor="@color/text_light"
+            android:textSize="@dimen/font_size_widget_icon"
             android:textStyle="bold" />
 
 
@@ -154,36 +150,35 @@
             android:id="@+id/text_widget_d_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="@dimen/margin_extra_large"
+            android:layout_marginStart="@dimen/margin_extra_large"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="Loading..." />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_d_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_d_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="4dp"
-            android:text="" />
+            android:padding="@dimen/padding_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_d_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:padding="4dp"
-            android:text="More..." />
+            android:layout_marginLeft="@dimen/margin_middle"
+            android:layout_marginStart="@dimen/margin_middle"
+            android:padding="@dimen/padding_extra_small"
+            android:text="@string/more" />
 
     </LinearLayout>
 

@@ -22,15 +22,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:padding="@dimen/padding_small"
             tools:context=".activities.AddRecipeActivity">
 
             <EditText
                 android:id="@+id/edit_text_recipe_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:hint="Recipe Name"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:hint="@string/recipe_name"
                 android:inputType="textCapWords" />
 
             <TextView
@@ -38,17 +38,18 @@
                 style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_add"
                 android:drawableRight="@mipmap/ic_add"
                 android:gravity="center_vertical"
                 android:text="@string/ingredients"
-                android:textSize="18sp" />
+                android:textSize="@dimen/font_size_large" />
 
             <LinearLayout
                 android:id="@+id/ingredients_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="16dp">
+                android:paddingLeft="@dimen/padding_large">
 
             </LinearLayout>
 
@@ -56,9 +57,9 @@
                 style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Steps"
-                android:textSize="18sp" />
+                android:layout_marginTop="@dimen/margin_medium"
+                android:text="@string/steps"
+                android:textSize="@dimen/font_size_large" />
 
             <EditText
                 android:id="@+id/edit_text_steps"
@@ -69,9 +70,9 @@
                 style="@style/AppTheme.TextSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Notes"
-                android:textSize="18sp" />
+                android:layout_marginTop="@dimen/margin_medium"
+                android:text="@string/notes"
+                android:textSize="@dimen/font_size_large" />
 
             <EditText
                 android:id="@+id/edit_text_notes"

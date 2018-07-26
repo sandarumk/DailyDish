@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DailyDish</string>
+    <string name="app_name">Daily Dish</string>
     <string name="title_activity_settings">Settings</string>
 
 
@@ -92,4 +92,15 @@
 
     <string name="msg_add_named_recipe">Press + button to add # recipe</string>
     <string name="msg_add_recipe">Press + button to add new recipe</string>
+    <string name="steps">Steps</string>
+    <string name="notes">Notes</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
+    <string name="today">Today</string>
+    <string name="breakfast_letter">B</string>
+    <string name="more">More...</string>
+    <string name="lunch_letter">L</string>
+    <string name="dinner_letter">D</string>
+    <string name="recipe_name">Recipe Name</string>
 </resources>

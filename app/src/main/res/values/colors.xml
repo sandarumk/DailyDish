@@ -6,10 +6,8 @@
     <color name="colorAccent">#ff9800</color>
     <color name="colorWidgetBackgraound">#77ffffff</color>
 
-    <!-- Black 87% -->
     <color name="primary_text">#de000000</color>
-    <!-- Black 54% -->
     <color name="secondary_text">#8a000000</color>
-     Black 54% (TODO: same as secondary?)
-    <!--<color name="tertiary_text_material_light">#8a000000</color>-->
+
+    <color name="text_light">@android:color/white</color>
 </resources>

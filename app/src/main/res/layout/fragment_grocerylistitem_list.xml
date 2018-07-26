@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:name="com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/list"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".fragments.GroceryListItemFragment"
-    tools:listitem="@layout/grocery_list_item_row" >
+    android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".fragments.GroceryListItemFragment"
+        tools:listitem="@layout/grocery_list_item_row">
+
+    </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -25,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:src="@mipmap/ic_fab_add"
-        app:useCompatPadding="true"
-        android:layout_alignParentRight="true" />
+        app:useCompatPadding="true" />
 
 </RelativeLayout>
