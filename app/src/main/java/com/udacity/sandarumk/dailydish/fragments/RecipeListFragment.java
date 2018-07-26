@@ -19,7 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
@@ -47,7 +50,11 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
+    private TextView textMsg;
     private List<Recipe> allRecipes;
+    private String lastSearch;
+
+    private InterstitialAd mInterstitialAd;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -74,6 +81,11 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
         setHasOptionsMenu(true);
+
+        mInterstitialAd = new InterstitialAd(this.getContext());
+//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-1454306136054607/5742531443");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     private void selectRecipe(Recipe item) {
@@ -86,6 +98,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
         recyclerView = view.findViewById(R.id.recipe_list);
+        textMsg = view.findViewById(R.id.text_msg);
         // Set the adapter
         Context context = view.getContext();
         if (mColumnCount <= 1) {
@@ -131,6 +144,9 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         if (recipeWrapper != null) {
             intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE, recipeWrapper);
         }
+        if (lastSearch != null) {
+            intent.putExtra(AddRecipeActivity.INTENT_EXTRA_RECIPE_NAME, lastSearch);
+        }
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -144,6 +160,9 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             loadRecipes();
+        }
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
         }
     }
 
@@ -171,10 +190,11 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
     @Override
     public boolean onQueryTextSubmit(String newText) {
         if (newText == null || newText.trim().isEmpty()) {
-            updateList(allRecipes);
+            updateList(allRecipes, true);
             return false;
         }
-        updateList(filterRecipes(newText));
+        updateList(filterRecipes(newText), true);
+        lastSearch = newText;
         return false;
     }
 
@@ -208,8 +228,19 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         return true;
     }
 
-    private void updateList(List<Recipe> result) {
+    private void updateList(List<Recipe> result, boolean searchResult) {
         this.recyclerView.setAdapter(new RecipeListAdapter(result, this.mListener));
+        if (result == null || result.isEmpty()) {
+            textMsg.setVisibility(View.VISIBLE);
+            if (searchResult) {
+                String string = getContext().getString(R.string.msg_add_named_recipe);
+                textMsg.setText(string.replace("#", lastSearch));
+            } else {
+                textMsg.setText(R.string.msg_add_recipe);
+            }
+        } else {
+            textMsg.setVisibility(View.GONE);
+        }
     }
 
 
@@ -255,7 +286,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
                 RecipeListFragment recipeListFragment = fragmentReference.get();
                 if (recipeListFragment != null) {
                     recipeListFragment.allRecipes = result;
-                    recipeListFragment.updateList(result);
+                    recipeListFragment.updateList(result, false);
                 }
             }
         }

@@ -89,4 +89,7 @@
     </string-array>
     <string name="title_activity_recipe_select">Select a recipe</string>
     <string name="action_settings">Settings</string>
+
+    <string name="msg_add_named_recipe">Press + button to add # recipe</string>
+    <string name="msg_add_recipe">Press + button to add new recipe</string>
 </resources>

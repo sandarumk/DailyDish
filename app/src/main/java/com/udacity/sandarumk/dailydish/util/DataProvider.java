@@ -22,8 +22,11 @@ import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.experimental.UtilityClass;
 
@@ -31,6 +34,7 @@ import lombok.experimental.UtilityClass;
 public class DataProvider {
 
     public static final String JOINER = "~";
+    public static final String MANUALLY_ADDED = "Manually Added";
 
     public AppDatabase getDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, "dailydish").build();
@@ -66,7 +70,14 @@ public class DataProvider {
     }
 
     public List<Recipe> loadAllRecipes(Context context) {
-        return getDatabase(context).recipeDAO().loadAllRecipes();
+        List<Recipe> recipes = getDatabase(context).recipeDAO().loadAllRecipes();
+        Iterator<Recipe> iter = recipes.listIterator();
+        while (iter.hasNext()) {
+            if (iter.next().getRecipeName().equals(MANUALLY_ADDED)) {
+                iter.remove();
+            }
+        }
+        return recipes;
     }
 
     public List<DayWrapper> loadSchedule(Context context, Date from, Date to) {
@@ -210,11 +221,11 @@ public class DataProvider {
     public void addManualGroceryItem(Context context, Date date, String name, int quantity, QuantityUnit quantityUnit) {
         //save manual item from above details
         long recipeId = -1;
-        if (getDatabase(context).recipeDAO().getRecipeGivenName("Manually Added") != null) {
-            recipeId = getDatabase(context).recipeDAO().getRecipeGivenName("Manually Added").getRecipeId();
+        if (getDatabase(context).recipeDAO().getRecipeGivenName(MANUALLY_ADDED) != null) {
+            recipeId = getDatabase(context).recipeDAO().getRecipeGivenName(MANUALLY_ADDED).getRecipeId();
         } else {
             Recipe recipe = new Recipe();
-            recipe.setRecipeName("Manually Added");
+            recipe.setRecipeName(MANUALLY_ADDED);
             recipeId = getDatabase(context).recipeDAO().addRecipe(recipe);
         }
 
@@ -234,6 +245,17 @@ public class DataProvider {
         getDatabase(context).groceryListItemDAO().addGroceryItem(groceryListItem);
 
 
+    }
+
+    public List<String> loadAllIngredientNames(Context context) {
+        List<Ingredient> ingredients = getDatabase(context).ingredientDAO().loadAllIngredients();
+        Set<String> result = new HashSet<>();
+        if (ingredients != null) {
+            for (Ingredient ingredient : ingredients) {
+                result.add(ingredient.getIngredientName());
+            }
+        }
+        return new ArrayList<>(result);
     }
 
 

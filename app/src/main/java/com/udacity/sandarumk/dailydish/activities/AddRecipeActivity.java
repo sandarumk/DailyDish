@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,9 +36,11 @@ import java.util.List;
 public class AddRecipeActivity extends AppCompatActivity {
 
     public static final String INTENT_EXTRA_RECIPE = "recipeWrapper";
+    public static final String INTENT_EXTRA_RECIPE_NAME = "newRecipeName";
     public static final String INTENT_EXTRA_RECIPE_ID = "recipeWrapperId";
 
     private RecipeWrapper recipeWrapper;
+    private List<String> ingredients = new ArrayList<>();
 
     private EditText editTextRecipeName;
     private ViewGroup containerIngredients;
@@ -45,6 +48,7 @@ public class AddRecipeActivity extends AppCompatActivity {
     private EditText editTextNotes;
     private TextView textIngredients;
     private ArrayAdapter<QuantityUnit> quantityUnitArrayAdapter;
+    private ArrayAdapter<String> ingredientAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +59,14 @@ public class AddRecipeActivity extends AppCompatActivity {
         } else if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_ID)) {
             new RecipeDetailLoadTask(this).execute(getIntent().getLongExtra(INTENT_EXTRA_RECIPE_ID, 0));
         } else {
+            String newRecipeName = "";
+            if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_NAME)) {
+                newRecipeName = getIntent().getStringExtra(INTENT_EXTRA_RECIPE_NAME);
+            }
+            Recipe recipe = new Recipe();
+            recipe.setRecipeName(newRecipeName);
             recipeWrapper = RecipeWrapper.builder()
-                    .recipe(new Recipe())
+                    .recipe(recipe)
                     .recipeIngredientList(new ArrayList<Ingredient>())
                     .build();
         }
@@ -74,9 +84,13 @@ public class AddRecipeActivity extends AppCompatActivity {
         containerIngredients = findViewById(R.id.ingredients_layout);
         textIngredients = findViewById(R.id.text_ingredients);
 
+        if (ingredientAdapter == null) {
+            ingredientAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ingredients);
+        }
         if (recipeWrapper != null) {
             updateUI();
         }
+        new IngredientLoadTask(this).execute();
     }
 
     @Override
@@ -203,7 +217,7 @@ public class AddRecipeActivity extends AppCompatActivity {
 
         for (final Ingredient ingredient : recipeIngridientList) {
             final View ingredientView = createIngredientView(containerIngredients, ingredient);
-            EditText editTextIngredientName = ingredientView.findViewById(R.id.item_name);
+            AutoCompleteTextView editTextIngredientName = ingredientView.findViewById(R.id.item_name);
             editTextIngredientName.setText(ingredient.getIngredientName());
 
             EditText editTextIngredientSize = ingredientView.findViewById(R.id.item_size);
@@ -243,6 +257,11 @@ public class AddRecipeActivity extends AppCompatActivity {
         Spinner unitSpinner = ingredientView.findViewById(R.id.item_unit);
         unitSpinner.setAdapter(quantityUnitArrayAdapter);
         unitSpinner.setSelection(0);
+
+        AutoCompleteTextView editTextIngredientName = ingredientView.findViewById(R.id.item_name);
+        editTextIngredientName.setThreshold(1);
+        editTextIngredientName.setAdapter(ingredientAdapter);
+
         parentView.addView(ingredientView);
         ingredientView.findViewById(R.id.item_remove).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,6 +324,36 @@ public class AddRecipeActivity extends AppCompatActivity {
             if (result != null && activityReference.get() != null) {
                 activityReference.get().recipeWrapper = result;
                 activityReference.get().updateUI();
+            }
+        }
+    }
+
+    static class IngredientLoadTask extends AsyncTask<Void, Void, List<String>> {
+
+        private WeakReference<AddRecipeActivity> activityReference;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //show progress
+        }
+
+        public IngredientLoadTask(AddRecipeActivity activity) {
+            activityReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected List<String> doInBackground(Void... params) {
+            return DataProvider.loadAllIngredientNames(activityReference.get());
+        }
+
+        @Override
+        protected void onPostExecute(List<String> result) {
+            super.onPostExecute(result);
+            //hide progress
+            if (result != null && activityReference.get() != null) {
+                activityReference.get().ingredientAdapter.clear();
+                activityReference.get().ingredientAdapter.addAll(result);
             }
         }
     }
