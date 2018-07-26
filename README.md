@@ -15,3 +15,8 @@ The app will have the following features:
 2. You can plan your week by linking specific recipes to dates
 3. You can generate a grocery list with the aggregated list of food items and their expected
 expiry dates
+
+## API Key
+1. Replace the following string resource with your admob app api key <string name="ad_api_key">key</string> . If you do not have admob API key you can use the [test key](https://developers.google.com/admob/android/quick-start)
+1. Replace the following string resource with your admob banner api key <string name="ad_banner_api_key">key</string> . If you do not have admob API key you can use the [test key](https://developers.google.com/admob/android/banner)
+1. Replace the following string resource with your admob interstitial api key <string name="ad_interstitial_api_key">key</string> . If you do not have admob API key you can use the [test key](https://developers.google.com/admob/android/interstitial)
