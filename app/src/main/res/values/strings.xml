@@ -108,7 +108,9 @@
     <string name="invalid_ingredient_quantity_error">Invalid ingredient quantity</string>
     <string name="invalid_unit_selected">Invalid unit selected for the ingredient</string>
 
-    <string name="ad_api_key">ca-app-pub-1454306136054607~1239265956</string>
-
     <string name="add_new_item">Add New Item</string>
+
+    <string name="ad_app_api_key">ca-app-pub-1454306136054607~1239265956</string>
+    <string name="ad_banner_api_key">ca-app-pub-1454306136054607/5505814028</string>
+    <string name="ad_interstitial_api_key">ca-app-pub-1454306136054607/5742531443</string>
 </resources>

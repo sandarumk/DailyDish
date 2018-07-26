@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MobileAds.initialize(this, getApplicationContext().getString(R.string.ad_api_key));
+        MobileAds.initialize(this, getApplicationContext().getString(R.string.ad_app_api_key));
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

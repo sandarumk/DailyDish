@@ -84,7 +84,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
 
         mInterstitialAd = new InterstitialAd(this.getContext());
 //        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.setAdUnitId("ca-app-pub-1454306136054607/5742531443");
+        mInterstitialAd.setAdUnitId(getString(R.string.ad_interstitial_api_key));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
