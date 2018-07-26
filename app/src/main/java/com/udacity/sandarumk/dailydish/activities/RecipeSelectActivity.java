@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
@@ -30,6 +31,12 @@ public class RecipeSelectActivity extends AppCompatActivity implements RecipeLis
                 .replace(R.id.container, RecipeListFragment.newInstance(1))
                 .commit();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseAnalytics.getInstance(this).setCurrentScreen(this, "SelectRecipe", RecipeSelectActivity.class.getSimpleName());
     }
 
     @Override

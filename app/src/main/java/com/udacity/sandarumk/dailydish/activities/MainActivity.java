@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.fragments.GroceryListItemFragment;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private Date from;
     private Date to;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
 
         MobileAds.initialize(this, "ca-app-pub-1454306136054607~1239265956");
 //        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
         to = dateDatePair.second;
 
         openSelectedOption(R.id.this_week);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAnalytics.setCurrentScreen(this, TAG, TAG);
     }
 
     @Override
@@ -108,6 +117,11 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
                 newFragment = new Fragment();
                 break;
         }
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, newFragment.getClass().getSimpleName());
+        FirebaseAnalytics.getInstance(this).logEvent("navigation_drawer_select", params);
+
         if (newFragment != null) {
             transaction.replace(R.id.content_frame, newFragment);
             String backStackname = getTitle().toString();

@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
 import com.udacity.sandarumk.dailydish.adapters.RecipeListAdapter;
@@ -106,8 +107,13 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         });
 
         loadRecipes();
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseAnalytics.getInstance(this.getContext()).setCurrentScreen(this.getActivity(), "RecipeList", RecipeListFragment.class.getSimpleName());
     }
 
     @Override
@@ -174,6 +180,10 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
 
     @NonNull
     private List<Recipe> filterRecipes(String newText) {
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.SEARCH_TERM, newText);
+        FirebaseAnalytics.getInstance(this.getContext()).logEvent("recipe_search", params);
+
         List<Recipe> filtered = new ArrayList<>();
         for (Recipe recipe : allRecipes) {
             if (recipe.getRecipeName().toLowerCase().contains(newText.toLowerCase())) {

@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datamodel.Ingredient;
 import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
@@ -99,6 +100,12 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseAnalytics.getInstance(this).setCurrentScreen(this, "Recipe", AddRecipeActivity.class.getSimpleName());
+    }
+
     private void updateRecipe() {
         Recipe recipe = recipeWrapper.getRecipe();
         recipe.setRecipeName(editTextRecipeName.getText().toString());
@@ -143,6 +150,16 @@ public class AddRecipeActivity extends AppCompatActivity {
             ingredient.setQuantity(Integer.parseInt(ingredientQuantity));
             ingredient.setQuantityUnit(QuantityUnit.findBySymbol(unitSymbol));
 
+        }
+
+        {
+            Bundle params = new Bundle();
+            params.putString(FirebaseAnalytics.Param.ITEM_NAME, recipe.getRecipeName());
+            FirebaseAnalytics.getInstance(this).logEvent("save_recipe", params);
+        }
+
+        if (recipe.getRecipeNotes() != null && !recipe.getRecipeNotes().isEmpty()) {
+            FirebaseAnalytics.getInstance(this).logEvent("save_recipe_note", null);
         }
 
         RecipeSaveTask asyncTask = new RecipeSaveTask(this);

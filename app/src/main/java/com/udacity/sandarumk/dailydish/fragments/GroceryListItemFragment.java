@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.adapters.GroceryListItemRecyclerViewAdapter;
 import com.udacity.sandarumk.dailydish.datamodel.QuantityUnit;
@@ -113,8 +114,20 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseAnalytics.getInstance(this.getContext()).setCurrentScreen(this.getActivity(), "GroceryList", GroceryListItemFragment.class.getSimpleName());
+    }
+
+    @Override
     protected void startLoad() {
-        getActivity().setTitle("Groceries for " + getDateDescription());
+        String title = "Groceries for " + getDateDescription();
+        getActivity().setTitle(title);
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, title);
+        FirebaseAnalytics.getInstance(this.getContext()).logEvent("view_schedule", params);
+
         new GroceryLoadTask(this).execute(from, to);
     }
 

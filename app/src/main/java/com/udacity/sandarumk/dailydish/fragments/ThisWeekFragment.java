@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.activities.AddRecipeActivity;
 import com.udacity.sandarumk.dailydish.activities.RecipeSelectActivity;
@@ -97,6 +98,12 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseAnalytics.getInstance(this.getContext()).setCurrentScreen(this.getActivity(), "MealSchedule", ThisWeekFragment.class.getSimpleName());
     }
 
     @Override
@@ -230,7 +237,13 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
 
     @Override
     protected void startLoad() {
-        getActivity().setTitle("Meals for " + getDateDescription());
+        String title = "Meals for " + getDateDescription();
+        getActivity().setTitle(title);
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, title);
+        FirebaseAnalytics.getInstance(this.getContext()).logEvent("view_schedule", params);
+
         new ScheduleLoadTask(this).execute(from, to);
     }
 
