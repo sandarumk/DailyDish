@@ -36,6 +36,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -46,13 +49,12 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
 
     private static final String TAG = GroceryListItemFragment.class.getSimpleName();
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
 
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
+    private Unbinder unbinder;
 
 
     /**
@@ -85,10 +87,9 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_grocerylistitem_list, container, false);
-
+        unbinder = ButterKnife.bind(this, view);
         recyclerView = view.findViewById(R.id.list);
 
-        // Set the adapter
         if (recyclerView != null) {
             Context context = recyclerView.getContext();
             if (mColumnCount <= 1) {
@@ -117,6 +118,12 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
     public void onResume() {
         super.onResume();
         FirebaseAnalytics.getInstance(this.getContext()).setCurrentScreen(this.getActivity(), "GroceryList", GroceryListItemFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
@@ -158,7 +165,7 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
 
 
         new AlertDialog.Builder(this.getContext())
-                .setTitle("Add New Item")
+                .setTitle(this.getContext().getString(R.string.add_new_item))
                 .setView(parent)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

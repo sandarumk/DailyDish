@@ -9,15 +9,9 @@ import android.widget.TextView;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.fragments.RecipeListFragment.OnListFragmentInteractionListener;
-import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.ViewHolder> {
 
     private final List<Recipe> mValues;
@@ -45,7 +39,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         if ((mealTime / 100) == 1) {
             mealTimeText += "B|";
         }
-        if ((mealTime / 10)% 10 == 1) {
+        if ((mealTime / 10) % 10 == 1) {
             mealTimeText += "L|";
         }
         if (mealTime % 2 == 1) {
@@ -54,8 +48,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         if (mealTimeText.isEmpty()) {
             mealTimeText = "--";
         }
-        if(mealTimeText.endsWith("|")){
-            mealTimeText = mealTimeText.substring(0,mealTimeText.length() -1);
+        if (mealTimeText.endsWith("|")) {
+            mealTimeText = mealTimeText.substring(0, mealTimeText.length() - 1);
         }
         holder.mIconView.setText(mealTimeText);
 
@@ -90,9 +84,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.recipe_name);
-            mContentView = (TextView) view.findViewById(R.id.recipe_ingredients);
-            mIconView = (TextView) view.findViewById(R.id.meal_time);
+            mIdView = view.findViewById(R.id.recipe_name);
+            mContentView = view.findViewById(R.id.recipe_ingredients);
+            mIconView = view.findViewById(R.id.meal_time);
         }
 
         @Override

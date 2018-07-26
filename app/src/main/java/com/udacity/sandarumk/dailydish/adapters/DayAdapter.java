@@ -17,6 +17,9 @@ import com.udacity.sandarumk.dailydish.util.ExtendedDateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
 
     private SimpleDateFormat sdfName = new SimpleDateFormat("EEEE");
@@ -33,36 +36,27 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public CardView mCardView;
-        public TextView mDateTextView;
-        public TextView mDateTextViewName;
-        public FlexboxLayout flexboxBreakfast;
-        public FlexboxLayout flexboxLunch;
-        public FlexboxLayout flexboxDinner;
-        public View buttonAddBreakfast;
-        public View buttonAddLunch;
-        public View buttonAddDinner;
+        @BindView(R.id.text_date) public TextView mDateTextView;
+        @BindView(R.id.text_date_name) public TextView mDateTextViewName;
+        @BindView(R.id.flexbox_breakfast)public FlexboxLayout flexboxBreakfast;
+        @BindView(R.id.flexbox_lunch)public FlexboxLayout flexboxLunch;
+        @BindView(R.id.flexbox_dinner)public FlexboxLayout flexboxDinner;
+        @BindView(R.id.text_breakfast)public View buttonAddBreakfast;
+        @BindView(R.id.text_lunch)public View buttonAddLunch;
+        @BindView(R.id.text_dinner)public View buttonAddDinner;
 
         public ViewHolder(CardView v) {
             super(v);
+            ButterKnife.bind(this, v);
             mCardView = v;
-            mDateTextView = mCardView.findViewById(R.id.text_date);
-            mDateTextViewName = mCardView.findViewById(R.id.text_date_name);
-            flexboxBreakfast = mCardView.findViewById(R.id.flexbox_breakfast);
-            flexboxLunch = mCardView.findViewById(R.id.flexbox_lunch);
-            flexboxDinner = mCardView.findViewById(R.id.flexbox_dinner);
-            buttonAddBreakfast = mCardView.findViewById(R.id.text_breakfast);
-            buttonAddLunch = mCardView.findViewById(R.id.text_lunch);
-            buttonAddDinner = mCardView.findViewById(R.id.text_dinner);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public DayAdapter(List<DayWrapper> myDataset, ScheduleEventListener scheduleEventListener) {
         mDataset = myDataset;
         this.scheduleEventListener = scheduleEventListener;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public DayAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                     int viewType) {
@@ -73,12 +67,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        //holder.mTextView.setText("text");
         final DayWrapper dayWrapper = mDataset.get(position);
         holder.mDateTextView.setText(sdf.format(dayWrapper.getDate()));
         holder.mDateTextViewName.setText(sdfName.format(dayWrapper.getDate()));
@@ -140,7 +130,6 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.ViewHolder> {
         return mDataset;
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();

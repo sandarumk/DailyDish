@@ -33,6 +33,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AddRecipeActivity extends AppCompatActivity {
 
     public static final String INTENT_EXTRA_RECIPE = "recipeWrapper";
@@ -42,11 +45,13 @@ public class AddRecipeActivity extends AppCompatActivity {
     private RecipeWrapper recipeWrapper;
     private List<String> ingredients = new ArrayList<>();
 
-    private EditText editTextRecipeName;
-    private ViewGroup containerIngredients;
-    private EditText editTextSteps;
-    private EditText editTextNotes;
-    private TextView textIngredients;
+    @BindView(R.id.edit_text_recipe_name) EditText editTextRecipeName;
+    @BindView(R.id.edit_text_steps) EditText editTextSteps;
+    @BindView(R.id.edit_text_notes) EditText editTextNotes;
+    @BindView(R.id.text_ingredients) TextView textIngredients;
+
+    @BindView(R.id.ingredients_layout) ViewGroup containerIngredients;
+
     private ArrayAdapter<QuantityUnit> quantityUnitArrayAdapter;
     private ArrayAdapter<String> ingredientAdapter;
 
@@ -72,17 +77,12 @@ public class AddRecipeActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_add_recipe);
+        ButterKnife.bind(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-
-        editTextRecipeName = findViewById(R.id.edit_text_recipe_name);
-        editTextSteps = findViewById(R.id.edit_text_steps);
-        editTextNotes = findViewById(R.id.edit_text_notes);
-        containerIngredients = findViewById(R.id.ingredients_layout);
-        textIngredients = findViewById(R.id.text_ingredients);
 
         if (ingredientAdapter == null) {
             ingredientAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ingredients);
@@ -148,15 +148,15 @@ public class AddRecipeActivity extends AppCompatActivity {
             String unitSymbol = ingredientUnitView.getSelectedItem().toString();
 
             if (ingredientName.isEmpty()) {
-                ingredientNameView.setError("Invalid ingredient name");
+                ingredientNameView.setError(getApplicationContext().getString(R.string.invalid_ingredient_error));
                 return;
             }
             if (ingredientQuantity.isEmpty()) {
-                ingredientQuantityView.setError("Invalid ingredient quantity");
+                ingredientQuantityView.setError(getApplicationContext().getString(R.string.invalid_ingredient_quantity_error));
                 return;
             }
             if (unitSymbol.isEmpty()) {
-                Toast.makeText(this, "Invalid unit selected for the ingredient  " + ingredientName, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getApplicationContext().getString(R.string.invalid_unit_selected) + ingredientName, Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -251,7 +251,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         if (quantityUnitArrayAdapter == null) {
             quantityUnitArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_list_item, QuantityUnit.values());
         }
-        //add sample ingredient
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         final View ingredientView = layoutInflater.inflate(R.layout.ingredient_layout, null);
         Spinner unitSpinner = ingredientView.findViewById(R.id.item_unit);
@@ -305,7 +304,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //show progress
         }
 
         public RecipeDetailLoadTask(AddRecipeActivity activity) {
@@ -320,7 +318,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(RecipeWrapper result) {
             super.onPostExecute(result);
-            //hide progress
             if (result != null && activityReference.get() != null) {
                 activityReference.get().recipeWrapper = result;
                 activityReference.get().updateUI();
@@ -335,7 +332,6 @@ public class AddRecipeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //show progress
         }
 
         public IngredientLoadTask(AddRecipeActivity activity) {
@@ -350,13 +346,10 @@ public class AddRecipeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<String> result) {
             super.onPostExecute(result);
-            //hide progress
             if (result != null && activityReference.get() != null) {
                 activityReference.get().ingredientAdapter.clear();
                 activityReference.get().ingredientAdapter.addAll(result);
             }
         }
     }
-
-
 }

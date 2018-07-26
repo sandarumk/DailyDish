@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MobileAds.initialize(this, "ca-app-pub-1454306136054607~1239265956");
-//        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, getApplicationContext().getString(R.string.ad_api_key));
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -55,14 +54,8 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
-
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-
                         openSelectedOption(menuItem.getItemId());
 
                         return true;

@@ -10,15 +10,12 @@ import android.widget.TextView;
 
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.datawrappers.GroceryItemWrapper;
-import com.udacity.sandarumk.dailydish.fragments.dummy.RecipeContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<GroceryListItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<GroceryItemWrapper> mValues;
@@ -84,17 +81,16 @@ public class GroceryListItemRecyclerViewAdapter extends RecyclerView.Adapter<Gro
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public final CheckBox mCheckBox;
+
+        @BindView(R.id.text_grocery_item_name) public TextView mIdView;
+        @BindView(R.id.text_grocery_item_quantity) public TextView mContentView;
+        @BindView(R.id.check_grocery_item) public CheckBox mCheckBox;
         public GroceryItemWrapper mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.text_grocery_item_name);
-            mContentView = (TextView) view.findViewById(R.id.text_grocery_item_quantity);
-            mCheckBox = view.findViewById(R.id.check_grocery_item);
+            ButterKnife.bind(this, view);
         }
 
         @Override

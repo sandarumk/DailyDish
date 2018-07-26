@@ -106,7 +106,6 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-//        recyclerView.setAdapter(new RecipeListAdapter(RecipeContent.ITEMS, mListener));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
