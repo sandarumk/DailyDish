@@ -1,5 +1,6 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,8 +9,8 @@ import android.support.v4.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 
-import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.udacity.sandarumk.dailydish.R;
 import com.udacity.sandarumk.dailydish.util.DateUtil;
 
@@ -17,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public abstract class TimeChangeFragment extends Fragment implements CalendarDatePickerDialogFragment.OnDateSetListener {
+public abstract class TimeChangeFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String FRAG_TAG_DATE_PICKER = "FRAG_TAG_DATE_PICKER";
     private static final String STATE_KEY_FROM = "TimeChangeFragmentfrom";
@@ -82,20 +83,14 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
     }
 
     private void changeWeek() {
-
-        CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
-                .setOnDateSetListener(this)
-                .setFirstDayOfWeek(Calendar.SUNDAY);
-//                .setPreselectedDate(towDaysAgo.getYear(), towDaysAgo.getMonthOfYear() - 1, towDaysAgo.getDayOfMonth())
-//                .setDateRange(minDate, null)
-//                .setDoneText("OK")
-//                .setCancelText("Cancel")
-//                .setThemeDark();
-        cdp.show(this.getActivity().getSupportFragmentManager(), FRAG_TAG_DATE_PICKER);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(from);
+        new DatePickerDialog(this.getContext(), this,
+                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     @Override
-    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(DatePicker dialog, int year, int monthOfYear, int dayOfMonth) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, monthOfYear, dayOfMonth);
         Pair<Date, Date> startEnd = DateUtil.getWeekStartEnd(this.getContext(), cal.getTime());
