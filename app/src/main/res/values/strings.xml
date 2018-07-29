@@ -113,4 +113,12 @@
     <string name="ad_app_api_key">key</string>
     <string name="ad_banner_api_key">key</string>
     <string name="ad_interstitial_api_key">key</string>
+
+    <!--Content descriptions-->
+    <string name="fab_cook">Let\'s start cooking</string>
+    <string name="fab_add_new_recipe">Add new recipe</string>
+    <string name="fab_add_grocery_item">Add grocery item</string>
+    <string name="remove_recipe">Remove recipe</string>
+    <string name="remove_ingredient">Remove ingredient</string>
+    <string name="daily_dish_logo">Daily Dish Logo</string>
 </resources>

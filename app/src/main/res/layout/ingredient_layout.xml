@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1.5"
         android:padding="@dimen/padding_extra_small"
+        android:contentDescription="@string/remove_ingredient"
         android:scaleType="centerInside"
         android:src="@drawable/close_circle" />
 

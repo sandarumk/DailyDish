@@ -33,6 +33,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:contentDescription="@string/fab_add_new_recipe"
         android:src="@mipmap/ic_fab_add"
         app:useCompatPadding="true" />
 
