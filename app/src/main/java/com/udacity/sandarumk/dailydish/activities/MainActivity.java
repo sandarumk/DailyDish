@@ -118,11 +118,11 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
                 newFragment = ThisWeekFragment.newInstance(from, to);
                 break;
             case R.id.recipes:
-                setTitle("Recipes");
+                setTitle(R.string.recipes);
                 newFragment = RecipeListFragment.newInstance(1);
                 break;
             case R.id.grocery_list:
-                setTitle("Grocery List");
+                setTitle(R.string.grocery_list);
                 newFragment = GroceryListItemFragment.newInstance(1, from, to);
                 break;
             default:

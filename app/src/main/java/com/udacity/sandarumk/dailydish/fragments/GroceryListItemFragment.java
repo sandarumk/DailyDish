@@ -356,7 +356,7 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
                 if (result != null) {
                     fragmentReference.get().refreshGroceryList();
                 } else {
-                    Toast.makeText(fragmentReference.get().getContext(), "Error updating grocery item status", Toast.LENGTH_LONG).show();
+                    Toast.makeText(fragmentReference.get().getContext(), R.string.error_updating_grocery_item_status, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -395,7 +395,7 @@ public class GroceryListItemFragment  extends TimeChangeFragment implements Groc
                 if (result != null) {
                     fragmentReference.get().startLoad();
                 } else {
-                    Toast.makeText(fragmentReference.get().getContext(), "Error adding manual grocery item", Toast.LENGTH_LONG).show();
+                    Toast.makeText(fragmentReference.get().getContext(), R.string.error_adding_grocery_item, Toast.LENGTH_LONG).show();
                 }
             }
         }

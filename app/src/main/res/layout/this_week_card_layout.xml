@@ -117,7 +117,6 @@
                 android:drawableLeft="@mipmap/ic_add"
                 android:drawableStart="@mipmap/ic_add"
                 android:gravity="center_vertical"
-                android:onClick="addLunch"
                 android:text="@string/lunch"
                 app:fontFamily="@font/roboto" />
 

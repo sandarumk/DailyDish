@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
-        app:layoutManager="LinearLayoutManager"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context=".fragments.GroceryListItemFragment"
         tools:listitem="@layout/grocery_list_item_row"
         android:layout_marginEnd="@dimen/margin_large"

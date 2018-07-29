@@ -65,7 +65,8 @@
             <EditText
                 android:id="@+id/edit_text_steps"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="@string/steps" />
 
             <TextView
                 style="@style/AppTheme.TextSecondary"
@@ -78,7 +79,8 @@
             <EditText
                 android:id="@+id/edit_text_notes"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="@string/notes" />
 
         </LinearLayout>
     </ScrollView>

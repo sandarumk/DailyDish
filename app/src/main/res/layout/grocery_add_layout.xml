@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:hint="Item name" />
+        android:hint="@string/item_name" />
 
 
     <android.support.v7.widget.AppCompatSpinner
@@ -35,7 +35,7 @@
         android:layout_below="@id/edit_grocery_item_name"
         android:layout_toLeftOf="@+id/spinner_grocery_item_unit"
         android:gravity="end"
-        android:hint="Quantity"
+        android:hint="@string/quantity"
         android:inputType="number"
         android:layout_toStartOf="@+id/spinner_grocery_item_unit" />
 

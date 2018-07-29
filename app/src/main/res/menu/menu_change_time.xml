@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_change_week"
         android:icon="@mipmap/ic_menu_clock"
-        android:title="Select Week"
+        android:title="@string/select_week"
         app:showAsAction="always" />
 
 </menu>

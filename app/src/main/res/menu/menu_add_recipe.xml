@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_ok"
         android:icon="@mipmap/ic_menu_ok"
-        android:title="OK"
+        android:title="@string/ok"
         app:showAsAction="always" />
 
 </menu>

@@ -48,7 +48,6 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     private static final int REQUEST_CODE_RECIPE_DETAIL = 10111;
     private static final String STATE_KEY_SELECTED_DAY = "selectedDayWrapper";
     private static final String STATE_KEY_SELECTED_MEAL = "selectedMealTime";
-    public static final String ADD_RECIPE_MESSAGE = "Add some recipes to today's meal";
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
 
     private RecyclerView mRecyclerView;
@@ -179,20 +178,20 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
             }
 
             if (recipeMap.size() == 0) {
-                Toast.makeText(this.getContext(), ADD_RECIPE_MESSAGE, Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getContext(), R.string.add_recipe_to_today, Toast.LENGTH_LONG).show();
             } else if (recipeMap.size() == 1) {
                 startShowingRecipeDetail(new ArrayList<>(recipeMap.values()).get(0).getRecipeId());
             } else {
                 showRecipeSelectionDialog(new ArrayList<>(recipeMap.values()));
             }
         } else {
-            Toast.makeText(this.getContext(), ADD_RECIPE_MESSAGE, Toast.LENGTH_LONG).show();
+            Toast.makeText(this.getContext(), R.string.add_recipe_to_today, Toast.LENGTH_LONG).show();
         }
     }
 
     private void showRecipeSelectionDialog(final List<Recipe> recipes) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Select recipe to start");
+        builder.setTitle(R.string.select_recipt_to_start);
 
         // add a list
         String[] recipeNames = new String[recipes.size()];
