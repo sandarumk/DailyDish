@@ -71,6 +71,6 @@
     <string name="error_updating_grocery_item_status">Error updating grocery item status</string>
     <string name="error_adding_grocery_item">Error adding manual grocery item</string>
     <string name="add_recipe_to_today">Add some recipes to today\'s meal</string>
-    <string name="ingredient_name">Ingredient name</string>
+    <string name="ingredient_name">Ingredient</string>
     <string name="select_recipt_to_start">Select recipe to start</string>
 </resources>
