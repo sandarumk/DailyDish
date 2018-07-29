@@ -4,8 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import com.squareup.haha.guava.collect.ArrayListMultimap;
-import com.squareup.haha.guava.collect.Multimap;
 import com.udacity.sandarumk.dailydish.dao.IngredientDAO;
 import com.udacity.sandarumk.dailydish.dao.RecipeDAO;
 import com.udacity.sandarumk.dailydish.datamodel.AppDatabase;
@@ -171,7 +169,7 @@ public class DataProvider {
     }
 
     public List<GroceryItemWrapper> loadGroceryList(Context context, Date from, Date to) {
-        Multimap<String, GroceryItemBreakdownWrapper> groceryItemMap = ArrayListMultimap.create();
+        Map<String, List<GroceryItemBreakdownWrapper>> groceryItemMap = new HashMap<>();
         for (GroceryListItem groceryListItem : getDatabase(context).groceryListItemDAO().loadAllGroceryListItemsdForGivenDateRange(from, to)) {
             Ingredient ingredient = getDatabase(context).ingredientDAO().findById(groceryListItem.getIngredientId());
             Recipe recipe = getDatabase(context).recipeDAO().findById(ingredient.getRecipeId());
@@ -184,20 +182,26 @@ public class DataProvider {
                     .id(groceryListItem.getGroceryListItemID())
                     .checked(groceryListItem.isStatus())
                     .build();
-            groceryItemMap.put(ingredient.getIngredientName() + JOINER + ingredient.getQuantityUnit() + JOINER + groceryListItem.isStatus(), groceryBreakdownItem);
+            String key = ingredient.getIngredientName() + JOINER + ingredient.getQuantityUnit() + JOINER + groceryListItem.isStatus();
+            List<GroceryItemBreakdownWrapper> groceryItemBreakdownWrappers = groceryItemMap.get(key);
+            if (groceryItemBreakdownWrappers == null) {
+                groceryItemBreakdownWrappers = new ArrayList<>();
+                groceryItemMap.put(key, groceryItemBreakdownWrappers);
+            }
+            groceryItemBreakdownWrappers.add(groceryBreakdownItem);
         }
         return createGroceryListWrappers(groceryItemMap);
     }
 
-    private static List<GroceryItemWrapper> createGroceryListWrappers(Multimap<String, GroceryItemBreakdownWrapper> groceryItemMap) {
+    private static List<GroceryItemWrapper> createGroceryListWrappers(Map<String, List<GroceryItemBreakdownWrapper>> groceryItemMap) {
         List<GroceryItemWrapper> groceryItemWrapperList = new ArrayList<>();
-        for (String s : groceryItemMap.asMap().keySet()) {
-            ArrayList<GroceryItemBreakdownWrapper> breakdownWrappers = new ArrayList<>(groceryItemMap.get(s));
+        for (Map.Entry<String, List<GroceryItemBreakdownWrapper>> entry : groceryItemMap.entrySet()) {
+            List<GroceryItemBreakdownWrapper> breakdownWrappers = entry.getValue();
             int totalQuantity = 0;
             for (GroceryItemBreakdownWrapper breakdownWrapper : breakdownWrappers) {
                 totalQuantity += breakdownWrapper.getQuantity();
             }
-            String[] split = s.split(JOINER);
+            String[] split = entry.getKey().split(JOINER);
             GroceryItemWrapper groceryItemWrapper = GroceryItemWrapper.builder()
                     .ingredientName(split[0])
                     .totalQuantity(totalQuantity)
