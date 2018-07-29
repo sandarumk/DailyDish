@@ -11,4 +11,13 @@ public enum MealTime {
 
     @Getter
     private final int mealTime;
+
+    public static MealTime findMealTime(int mealTime) {
+        for (MealTime time : values()) {
+            if (mealTime == time.mealTime) {
+                return time;
+            }
+        }
+        return null;
+    }
 }

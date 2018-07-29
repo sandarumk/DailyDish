@@ -42,6 +42,8 @@ import java.util.Map;
 public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.ScheduleEventListener {
 
     private static final int REQUEST_CODE_RECIPE_DETAIL = 10111;
+    private static final String STATE_KEY_SELECTED_DAY = "selectedDayWrapper";
+    private static final String STATE_KEY_SELECTED_MEAL = "selectedMealTime";
     public static final String ADD_RECIPE_MESSAGE = "Add some recipes to today's meal";
     private final int REQUEST_CODE_SELECT_RECIPE = 10101;
 
@@ -52,8 +54,6 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
 
     private DayWrapper selectedDayWrapper;
     private MealTime selectedMealTime;
-
-    private int selectedPosition;
 
     // private OnFragmentInteractionListener mListener;
     public ThisWeekFragment() {
@@ -77,6 +77,10 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            selectedDayWrapper = (DayWrapper) savedInstanceState.getSerializable(STATE_KEY_SELECTED_DAY);
+            selectedMealTime = MealTime.findMealTime(savedInstanceState.getInt(STATE_KEY_SELECTED_MEAL));
+        }
         View view = inflater.inflate(R.layout.fragment_this_week, container, false);
 
         mRecyclerView = view.findViewById(R.id.my_recycler_view);
@@ -98,6 +102,15 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
         });
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_KEY_SELECTED_DAY, selectedDayWrapper);
+        if(selectedMealTime != null) {
+            outState.putInt(STATE_KEY_SELECTED_MEAL, selectedMealTime.getMealTime());
+        }
     }
 
     @Override
@@ -199,20 +212,17 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     public void onAddSchedule(int position, DayWrapper dayWrapper, MealTime mealTime) {
         selectedDayWrapper = dayWrapper;
         selectedMealTime = mealTime;
-        selectedPosition = position;
         Intent intent = new Intent(this.getContext(), RecipeSelectActivity.class);
         startActivityForResult(intent, REQUEST_CODE_SELECT_RECIPE);
     }
 
     @Override
     public void onDeleteSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
-        selectedPosition = position;
         new ScheduleDeleteTask(this).execute(dayWrapper.getDate(), mealTime, recipe);
     }
 
     @Override
     public void onSelectSchedule(int position, DayWrapper dayWrapper, MealTime mealTime, Recipe recipe) {
-        selectedPosition = position;
         startShowingRecipeDetail(recipe.getRecipeId());
     }
 

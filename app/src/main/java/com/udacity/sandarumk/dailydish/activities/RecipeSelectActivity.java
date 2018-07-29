@@ -27,10 +27,11 @@ public class RecipeSelectActivity extends AppCompatActivity implements RecipeLis
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, RecipeListFragment.newInstance(1))
-                .commit();
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, RecipeListFragment.newInstance(1))
+                    .commit();
+        }
     }
 
     @Override

@@ -43,15 +43,17 @@ import java.util.List;
  */
 public class RecipeListFragment extends Fragment implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final int REQUEST_CODE = 1000;
-    // TODO: Customize parameters
+    private static final String STATE_KEY_RECIPES = "allRecipes";
+    private static final String STATE_KEY_LAST_SEARCH = "lastSearch";
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private TextView textMsg;
-    private List<Recipe> allRecipes;
+
+    private ArrayList<Recipe> allRecipes;
     private String lastSearch;
 
     private InterstitialAd mInterstitialAd;
@@ -118,8 +120,21 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
             }
         });
 
-        loadRecipes();
+        if (savedInstanceState != null) {
+            lastSearch = savedInstanceState.getString(STATE_KEY_LAST_SEARCH);
+            allRecipes = (ArrayList<Recipe>) savedInstanceState.getSerializable(STATE_KEY_RECIPES);
+            showAllRecipes(allRecipes);
+        } else {
+            loadRecipes();
+        }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_KEY_RECIPES, allRecipes);
+        outState.putSerializable(STATE_KEY_LAST_SEARCH, lastSearch);
     }
 
     @Override
@@ -242,17 +257,12 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         }
     }
 
+    private void showAllRecipes(ArrayList<Recipe> result) {
+        this.allRecipes = result;
+        this.updateList(result, false);
+    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe item);
@@ -284,8 +294,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
             if (result != null) {
                 RecipeListFragment recipeListFragment = fragmentReference.get();
                 if (recipeListFragment != null) {
-                    recipeListFragment.allRecipes = result;
-                    recipeListFragment.updateList(result, false);
+                    recipeListFragment.showAllRecipes(new ArrayList<>(result));
                 }
             }
         }

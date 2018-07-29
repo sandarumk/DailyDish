@@ -41,16 +41,21 @@ public class AddRecipeActivity extends AppCompatActivity {
     public static final String INTENT_EXTRA_RECIPE = "recipeWrapper";
     public static final String INTENT_EXTRA_RECIPE_NAME = "newRecipeName";
     public static final String INTENT_EXTRA_RECIPE_ID = "recipeWrapperId";
+    private static final String STATE_KEY_RECIPE = "recipe";
 
     private RecipeWrapper recipeWrapper;
     private List<String> ingredients = new ArrayList<>();
 
-    @BindView(R.id.edit_text_recipe_name) EditText editTextRecipeName;
-    @BindView(R.id.edit_text_steps) EditText editTextSteps;
-    @BindView(R.id.edit_text_notes) EditText editTextNotes;
-    @BindView(R.id.text_ingredients) TextView textIngredients;
-
-    @BindView(R.id.ingredients_layout) ViewGroup containerIngredients;
+    @BindView(R.id.edit_text_recipe_name)
+    EditText editTextRecipeName;
+    @BindView(R.id.edit_text_steps)
+    EditText editTextSteps;
+    @BindView(R.id.edit_text_notes)
+    EditText editTextNotes;
+    @BindView(R.id.text_ingredients)
+    TextView textIngredients;
+    @BindView(R.id.ingredients_layout)
+    ViewGroup containerIngredients;
 
     private ArrayAdapter<QuantityUnit> quantityUnitArrayAdapter;
     private ArrayAdapter<String> ingredientAdapter;
@@ -59,21 +64,25 @@ public class AddRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getIntent().hasExtra(INTENT_EXTRA_RECIPE)) {
-            recipeWrapper = (RecipeWrapper) getIntent().getSerializableExtra(INTENT_EXTRA_RECIPE);
-        } else if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_ID)) {
-            new RecipeDetailLoadTask(this).execute(getIntent().getLongExtra(INTENT_EXTRA_RECIPE_ID, 0));
+        if (savedInstanceState != null) {
+            recipeWrapper = (RecipeWrapper) savedInstanceState.getSerializable(STATE_KEY_RECIPE);
         } else {
-            String newRecipeName = "";
-            if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_NAME)) {
-                newRecipeName = getIntent().getStringExtra(INTENT_EXTRA_RECIPE_NAME);
+            if (getIntent().hasExtra(INTENT_EXTRA_RECIPE)) {
+                recipeWrapper = (RecipeWrapper) getIntent().getSerializableExtra(INTENT_EXTRA_RECIPE);
+            } else if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_ID)) {
+                new RecipeDetailLoadTask(this).execute(getIntent().getLongExtra(INTENT_EXTRA_RECIPE_ID, 0));
+            } else {
+                String newRecipeName = "";
+                if (getIntent().hasExtra(INTENT_EXTRA_RECIPE_NAME)) {
+                    newRecipeName = getIntent().getStringExtra(INTENT_EXTRA_RECIPE_NAME);
+                }
+                Recipe recipe = new Recipe();
+                recipe.setRecipeName(newRecipeName);
+                recipeWrapper = RecipeWrapper.builder()
+                        .recipe(recipe)
+                        .recipeIngredientList(new ArrayList<Ingredient>())
+                        .build();
             }
-            Recipe recipe = new Recipe();
-            recipe.setRecipeName(newRecipeName);
-            recipeWrapper = RecipeWrapper.builder()
-                    .recipe(recipe)
-                    .recipeIngredientList(new ArrayList<Ingredient>())
-                    .build();
         }
 
         setContentView(R.layout.activity_add_recipe);
@@ -94,6 +103,13 @@ public class AddRecipeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        updateRecipeWrapper();
+        outState.putSerializable(STATE_KEY_RECIPE, recipeWrapper);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_recipe, menu);
@@ -107,7 +123,8 @@ public class AddRecipeActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.menu_ok:
-                updateRecipe();
+                updateRecipeWrapper();
+                startRecipeUpdate();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -120,7 +137,7 @@ public class AddRecipeActivity extends AppCompatActivity {
         FirebaseAnalytics.getInstance(this).setCurrentScreen(this, "Recipe", AddRecipeActivity.class.getSimpleName());
     }
 
-    private void updateRecipe() {
+    private void updateRecipeWrapper() {
         Recipe recipe = recipeWrapper.getRecipe();
         recipe.setRecipeName(editTextRecipeName.getText().toString());
         recipe.setRecipeSteps(editTextSteps.getText().toString());
@@ -163,16 +180,17 @@ public class AddRecipeActivity extends AppCompatActivity {
             ingredient.setIngredientName(ingredientName);
             ingredient.setQuantity(Integer.parseInt(ingredientQuantity));
             ingredient.setQuantityUnit(QuantityUnit.findBySymbol(unitSymbol));
-
         }
+    }
 
+    private void startRecipeUpdate() {
         {
             Bundle params = new Bundle();
-            params.putString(FirebaseAnalytics.Param.ITEM_NAME, recipe.getRecipeName());
+            params.putString(FirebaseAnalytics.Param.ITEM_NAME, recipeWrapper.getRecipe().getRecipeName());
             FirebaseAnalytics.getInstance(this).logEvent("save_recipe", params);
         }
 
-        if (recipe.getRecipeNotes() != null && !recipe.getRecipeNotes().isEmpty()) {
+        if (recipeWrapper.getRecipe().getRecipeNotes() != null && !recipeWrapper.getRecipe().getRecipeNotes().isEmpty()) {
             FirebaseAnalytics.getInstance(this).logEvent("save_recipe_note", null);
         }
 

@@ -20,6 +20,8 @@ import java.util.Date;
 public abstract class TimeChangeFragment extends Fragment implements CalendarDatePickerDialogFragment.OnDateSetListener {
 
     private static final String FRAG_TAG_DATE_PICKER = "FRAG_TAG_DATE_PICKER";
+    private static final String STATE_KEY_FROM = "TimeChangeFragmentfrom";
+    private static final String STATE_KEY_TO = "TimeChangeFragmentto";
 
     protected static final String ARG_FROM = "fromDate";
     protected static final String ARG_TO = "toDate";
@@ -30,16 +32,28 @@ public abstract class TimeChangeFragment extends Fragment implements CalendarDat
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            from = (Date) getArguments().getSerializable(ARG_FROM);
-            to = (Date) getArguments().getSerializable(ARG_TO);
-        }
-        if (from == null || to == null) {
-            Pair<Date, Date> startEnd = DateUtil.geCurrentWeekStartEnd(this.getContext());
-            from = startEnd.first;
-            to = startEnd.second;
+        if (savedInstanceState != null) {
+            from = (Date) savedInstanceState.getSerializable(STATE_KEY_FROM);
+            to = (Date) savedInstanceState.getSerializable(STATE_KEY_TO);
+        } else {
+            if (getArguments() != null) {
+                from = (Date) getArguments().getSerializable(ARG_FROM);
+                to = (Date) getArguments().getSerializable(ARG_TO);
+            }
+            if (from == null || to == null) {
+                Pair<Date, Date> startEnd = DateUtil.geCurrentWeekStartEnd(this.getContext());
+                from = startEnd.first;
+                to = startEnd.second;
+            }
         }
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_KEY_FROM, from);
+        outState.putSerializable(STATE_KEY_TO, to);
     }
 
     @Override

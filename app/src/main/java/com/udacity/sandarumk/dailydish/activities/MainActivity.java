@@ -27,11 +27,15 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements TimeChangeFragment.OnDateChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String STATE_KEY_FROM = "fromDate";
+    private static final String STATE_KEY_TO = "toDate";
+    private static final String STATE_KEY_SELECTION = "selection";
     private DrawerLayout mDrawerLayout;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     private Date from;
     private Date to;
+    private int selectedOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +66,26 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
                     }
                 });
 
-        Pair<Date, Date> dateDatePair = DateUtil.geCurrentWeekStartEnd(this);
-        from = dateDatePair.first;
-        to = dateDatePair.second;
+        if (savedInstanceState == null) {
+            Pair<Date, Date> dateDatePair = DateUtil.geCurrentWeekStartEnd(this);
+            from = dateDatePair.first;
+            to = dateDatePair.second;
+            selectedOption = R.id.this_week;
+        } else {
+            from = (Date) savedInstanceState.getSerializable(STATE_KEY_FROM);
+            to = (Date) savedInstanceState.getSerializable(STATE_KEY_TO);
+            selectedOption = savedInstanceState.getInt(STATE_KEY_SELECTION);
+        }
 
-        openSelectedOption(R.id.this_week);
+        openSelectedOption(selectedOption);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(STATE_KEY_FROM, from);
+        outState.putSerializable(STATE_KEY_TO, to);
+        outState.putInt(STATE_KEY_SELECTION, selectedOption);
     }
 
     @Override
@@ -88,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements TimeChangeFragmen
     private void openSelectedOption(int itemID) {
         Fragment newFragment = null;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
+        selectedOption = itemID;
         switch (itemID) {
             case R.id.settings:
                 setTitle(R.string.settings);

@@ -2,15 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="15"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:weightSum="15">
 
     <AutoCompleteTextView
         android:id="@+id/item_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="5.5" />
+        android:layout_weight="5.5"
+        android:saveEnabled="false" />
 
     <EditText
         android:id="@+id/item_size"
@@ -18,13 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:gravity="right"
-        android:inputType="number" />
+        android:inputType="number"
+        android:saveEnabled="false" />
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/item_unit"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_weight="5"
+        android:saveEnabled="false">
 
     </android.support.v7.widget.AppCompatSpinner>
 
@@ -32,8 +35,8 @@
         android:id="@+id/item_remove"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_extra_small"
         android:layout_weight="1.5"
+        android:padding="@dimen/padding_extra_small"
         android:scaleType="centerInside"
         android:src="@drawable/close_circle" />
 
