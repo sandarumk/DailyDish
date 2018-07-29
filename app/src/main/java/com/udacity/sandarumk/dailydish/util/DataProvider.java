@@ -1,5 +1,6 @@
 package com.udacity.sandarumk.dailydish.util;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
@@ -36,8 +37,13 @@ public class DataProvider {
     public static final String JOINER = "~";
     public static final String MANUALLY_ADDED = "Manually Added";
 
+    private static AppDatabase INSTANCE;
+
     public AppDatabase getDatabase(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, "dailydish").build();
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "dailydish").build();
+        }
+        return INSTANCE;
     }
 
     public void saveRecipe(Context context, Recipe recipe, List<Ingredient> ingredientList) {
@@ -78,6 +84,10 @@ public class DataProvider {
             }
         }
         return recipes;
+    }
+
+    public LiveData<List<Recipe>> loadLiveRecipes(Context context) {
+        return getDatabase(context).recipeDAO().loadLiveRecipes();
     }
 
     public List<DayWrapper> loadSchedule(Context context, Date from, Date to) {

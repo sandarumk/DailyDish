@@ -1,10 +1,13 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +33,7 @@ import com.udacity.sandarumk.dailydish.adapters.RecipeListAdapter;
 import com.udacity.sandarumk.dailydish.datamodel.Recipe;
 import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
+import com.udacity.sandarumk.dailydish.viewmodels.RecipeListViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -57,6 +61,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
     private String lastSearch;
 
     private InterstitialAd mInterstitialAd;
+    private RecipeListViewModel viewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -127,6 +132,15 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         } else {
             loadRecipes();
         }
+
+        viewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
+        viewModel.getRecipeList().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                showAllRecipes(recipes);
+            }
+        });
+
         return view;
     }
 
@@ -166,7 +180,7 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
 
 
     private void loadRecipes() {
-        new RecipeLoadTask(this).execute();
+//        new RecipeLoadTask(this).execute();
     }
 
     @Override
@@ -257,8 +271,8 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
         }
     }
 
-    private void showAllRecipes(ArrayList<Recipe> result) {
-        this.allRecipes = result;
+    private void showAllRecipes(List<Recipe> result) {
+        this.allRecipes = new ArrayList<>(result);
         this.updateList(result, false);
     }
 
@@ -266,38 +280,6 @@ public class RecipeListFragment extends Fragment implements SearchView.OnQueryTe
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe item);
-    }
-
-    static class RecipeLoadTask extends AsyncTask<Void, Void, List<Recipe>> {
-
-        private WeakReference<RecipeListFragment> fragmentReference;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //show progress
-        }
-
-        public RecipeLoadTask(RecipeListFragment fragment) {
-            fragmentReference = new WeakReference<>(fragment);
-        }
-
-        @Override
-        protected List<Recipe> doInBackground(Void... params) {
-            return DataProvider.loadAllRecipes(fragmentReference.get().getContext());
-        }
-
-        @Override
-        protected void onPostExecute(List<Recipe> result) {
-            super.onPostExecute(result);
-            //hide progress
-            if (result != null) {
-                RecipeListFragment recipeListFragment = fragmentReference.get();
-                if (recipeListFragment != null) {
-                    recipeListFragment.showAllRecipes(new ArrayList<>(result));
-                }
-            }
-        }
     }
 
     static class RecipeDetailLoadTask extends AsyncTask<Long, Void, RecipeWrapper> {

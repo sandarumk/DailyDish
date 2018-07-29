@@ -1,5 +1,6 @@
 package com.udacity.sandarumk.dailydish.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -20,6 +21,9 @@ public interface RecipeDAO {
 
     @Query("SELECT * FROM Recipe")
     List<Recipe> loadAllRecipes();
+
+    @Query("SELECT * FROM Recipe WHERE name != 'Manually Added' ORDER BY name")
+    LiveData<List<Recipe>> loadLiveRecipes();
 
     @Update
     void updateRecipe(Recipe... recipes);
