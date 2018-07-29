@@ -5,7 +5,9 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/padding_extra_large"
     android:paddingRight="@dimen/padding_extra_large"
-    android:paddingTop="@dimen/padding_middle">
+    android:paddingTop="@dimen/padding_middle"
+    android:paddingStart="@dimen/padding_extra_large"
+    android:paddingEnd="@dimen/padding_extra_large">
 
     <EditText
         android:id="@+id/edit_grocery_item_name"
@@ -21,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/edit_grocery_item_quantity"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/edit_grocery_item_name">
+        android:layout_below="@id/edit_grocery_item_name"
+        android:layout_alignParentEnd="true">
 
     </android.support.v7.widget.AppCompatSpinner>
 
@@ -31,9 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_grocery_item_name"
         android:layout_toLeftOf="@+id/spinner_grocery_item_unit"
-        android:gravity="right"
+        android:gravity="end"
         android:hint="Quantity"
-        android:inputType="number" />
+        android:inputType="number"
+        android:layout_toStartOf="@+id/spinner_grocery_item_unit" />
 
 
 </RelativeLayout>

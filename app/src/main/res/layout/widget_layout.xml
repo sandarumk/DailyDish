@@ -44,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_extra_large"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_extra_large" />
 
         <TextView
             android:id="@+id/text_widget_b_2"
@@ -52,7 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_small" />
 
         <TextView
             android:id="@+id/text_widget_b_3"
@@ -60,7 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_small" />
 
         <TextView
             android:id="@+id/text_widget_b_more"
@@ -98,7 +101,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_extra_large"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_extra_large" />
 
         <TextView
             android:id="@+id/text_widget_l_2"
@@ -106,7 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_l_3"
@@ -114,7 +119,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_l_more"
@@ -122,7 +128,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_middle"
             android:padding="@dimen/padding_extra_small"
-            android:text="@string/more" />
+            android:text="@string/more"
+            android:layout_marginStart="@dimen/margin_middle" />
 
     </LinearLayout>
 
@@ -161,7 +168,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_extra_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_extra_small" />
 
         <TextView
             android:id="@+id/text_widget_d_3"
@@ -169,7 +177,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:background="@drawable/chip_background"
-            android:padding="@dimen/padding_extra_small" />
+            android:padding="@dimen/padding_extra_small"
+            android:layout_marginStart="@dimen/margin_small" />
 
         <TextView
             android:id="@+id/text_widget_d_more"

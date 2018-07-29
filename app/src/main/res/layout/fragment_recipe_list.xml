@@ -14,7 +14,9 @@
         android:layout_marginRight="@dimen/margin_large"
         app:layoutManager="LinearLayoutManager"
         tools:context=".fragments.RecipeListFragment"
-        tools:listitem="@layout/fragment_recipe">
+        tools:listitem="@layout/fragment_recipe"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginEnd="@dimen/margin_large">
 
     </android.support.v7.widget.RecyclerView>
 

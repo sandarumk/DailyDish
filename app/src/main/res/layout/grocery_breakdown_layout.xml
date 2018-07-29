@@ -5,7 +5,9 @@
     android:paddingTop="@dimen/padding_middle"
     android:paddingLeft="@dimen/padding_extra_large"
     android:paddingRight="@dimen/padding_extra_large"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/padding_extra_large"
+    android:paddingEnd="@dimen/padding_extra_large">
 
     <LinearLayout
         android:id="@+id/container_breakdown"
