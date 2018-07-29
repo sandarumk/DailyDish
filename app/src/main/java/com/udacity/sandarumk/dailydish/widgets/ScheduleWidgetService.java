@@ -45,31 +45,12 @@ public class ScheduleWidgetService extends Service {
 
         for (int widgetId : allWidgetIds) {
 
-//            Uri uri = ScheduleContract.ScheduleRecipes.CONTENT_URI;
-//            String[] projection = null;
-//            String selection = ScheduleContract.ScheduleRecipes.DATE + " BETWEEN ? AND ? ";
-//            String[] selectionArgs = {sdf.format(dayRange.first), sdf.format(dayRange.second)};
-//            String sortOrder = null;
-//
-//            Cursor cursor = this.getApplicationContext().getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
-//
-//            if (cursor != null && cursor.getCount() > 0) {
-//                cursor.moveToFirst();
-//                mName = cursor.getString(cursor.getColumnIndex(ScheduleContract.Schedules.SCHEDULE_ID));
-//                mTitle = cursor.getString(cursor.getColumnIndex(ScheduleContract.Schedules.DATE));
-//                mDepartment = cursor.getString(cursor.getColumnIndex(ScheduleContract.Recipes.NAME));
-//                mPicture = cursor.getString(cursor.getColumnIndex(ScheduleContract.ScheduleRecipes.MEAL_TIME));
-//                cursor.close();
-//            } else {
-//                mName = "empty cursor";
-//            }
-
             final List<DayWrapper>[] dayWrappersArr = new ArrayList[]{new ArrayList<>()};
             ExecutorService service = Executors.newSingleThreadExecutor();
             service.execute(new Runnable() {
                 @Override
                 public void run() {
-                    dayWrappersArr[0] = DataProvider.loadSchedule(ScheduleWidgetService.this.getApplicationContext(), dayRange.first, dayRange.second);
+                    dayWrappersArr[0] = DataProvider.loadSchedule(ScheduleWidgetService.this.getApplicationContext(), dayRange.first, dayRange.first);
                 }
             });
             service.shutdown();
@@ -107,7 +88,7 @@ public class ScheduleWidgetService extends Service {
                 if (dinner == null || dinner.isEmpty()) {
                     noSchedule(remoteViews, R.id.text_widget_d_1, R.id.text_widget_d_2, R.id.text_widget_d_3, R.id.text_widget_d_more);
                 } else {
-                    setSchedule(remoteViews, dinner, R.id.text_widget_d_1, R.id.text_widget_d_2, R.id.text_widget_d_3, R.id.text_widget_l_more);
+                    setSchedule(remoteViews, dinner, R.id.text_widget_d_1, R.id.text_widget_d_2, R.id.text_widget_d_3, R.id.text_widget_d_more);
                 }
             }
 

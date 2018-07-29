@@ -1,5 +1,8 @@
 package com.udacity.sandarumk.dailydish.fragments;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -28,6 +31,7 @@ import com.udacity.sandarumk.dailydish.datawrappers.DayWrapper;
 import com.udacity.sandarumk.dailydish.datawrappers.RecipeWrapper;
 import com.udacity.sandarumk.dailydish.util.DataProvider;
 import com.udacity.sandarumk.dailydish.util.DateUtil;
+import com.udacity.sandarumk.dailydish.widgets.DailyDishAppWidgetProvider;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -108,7 +112,7 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(STATE_KEY_SELECTED_DAY, selectedDayWrapper);
-        if(selectedMealTime != null) {
+        if (selectedMealTime != null) {
             outState.putInt(STATE_KEY_SELECTED_MEAL, selectedMealTime.getMealTime());
         }
     }
@@ -269,6 +273,16 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
         startActivityForResult(intent, REQUEST_CODE_RECIPE_DETAIL);
     }
 
+    private void updateWidgets() {
+        Intent intent = new Intent(this.getContext(), DailyDishAppWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        Context applicationContext = this.getActivity().getApplicationContext();
+        int[] ids = AppWidgetManager.getInstance(applicationContext)
+                .getAppWidgetIds(new ComponentName(applicationContext, DailyDishAppWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        applicationContext.sendBroadcast(intent);
+    }
+
 
     static class ScheduleLoadTask extends AsyncTask<Date, Void, List<DayWrapper>> {
 
@@ -355,7 +369,7 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
             //hide progress
             if (result && fragmentReference.get() != null) {
                 fragmentReference.get().startLoad();
-
+                fragmentReference.get().updateWidgets();
             }
         }
     }
@@ -395,7 +409,7 @@ public class ThisWeekFragment extends TimeChangeFragment implements DayAdapter.S
             //hide progress
             if (result && fragmentReference.get() != null) {
                 fragmentReference.get().startLoad();
-
+                fragmentReference.get().updateWidgets();
             }
         }
     }
